@@ -47,7 +47,7 @@ function openTerminal() {
 function openAbout() {
 	new WinBox({
 		title: "About",
-		html: "<h1>&nbsp;About</h1><div>&nbsp;<a href='https://github.com/***REMOVED***' target='_blank'>github.com/***REMOVED***</a></div>",
+		html: "<h1>&nbsp;About</h1><div>&nbsp;<a href='https://github.com/renjith-mathew' target='_blank'>github.com/renjith-mathew</a></div>",
 		x: "center",
 		y: "center",
 		width: 200,

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html style="font-size:0.7em">
+
+<head>
+  <link rel="preload" href="js/winbox.bundle.min.js" as="script" />
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="css/xterm.min.css" rel="stylesheet" />
+</head>
+
+<body style="background-image:url('images/wallpaper.png');background-attachment:fixed;background-repeat: no-repeat;background-position: center center;">
+
+
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item dropdown">
+
+            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"  data-bs-toggle="dropdown" >
+              <img src="images/menu.png" alt="Menu" width="16" height="16">
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="openAbout()"><i class="bi bi-file-person"></i> About</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openSettings()"><i class="bi bi-gear"></i> Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="openTerminal()"><i class="bi bi-terminal"></i> Terminal</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openWebBrowser()"><i class="bi bi-browser-firefox"></i> Web Browser</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openFileBrowser()"><i class="bi bi-folder"></i> File Browser</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openChat()"><i class="bi bi-chat-left-text"></i> AI Chat</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openEditor()"><i class="bi bi-file-code"></i> Code Editor</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">&nbsp;</li>
+          <li class="nav-item">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Desktops">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+              <label class="btn btn-outline-secondary" for="btnradio1">1</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+              <label class="btn btn-outline-secondary" for="btnradio2">2</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+              <label class="btn btn-outline-secondary" for="btnradio3">3</label>
+            
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+              <label class="btn btn-outline-secondary" for="btnradio4">4</label>
+            </div>
+          </li>
+          <li class="nav-item">&nbsp;</li>
+          <li class="nav-item">
+            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openTerminal()">
+              <i class="bi bi-terminal"></i>
+            </button>        
+            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openWebBrowser()">
+              <i class="bi bi-browser-firefox"></i>
+            </button>        
+            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openFileBrowser()">
+              <i class="bi bi-folder"></i>
+            </button>        
+            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openChat()">
+              <i class="bi bi-chat-left-text"></i>
+            </button>        
+            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openEditor()">
+              <i class="bi bi-file-code"></i>
+            </button>        
+          </li>
+        </ul>
+        <form class="d-flex">
+          <button type="button" class="btn btn-outline-secondary  btn-sm"><i class="bi bi-volume-up"></i></button>&nbsp;
+          <button type="button" class="btn btn-outline-secondary  btn-sm"><i class="bi bi-thermometer-half"></i></button>&nbsp;
+          <button type="button" class="btn btn-outline-secondary  btn-sm"><i class="bi bi-wifi"></i></button>&nbsp;
+          <button type="button" class="btn btn-outline-secondary  btn-sm"  id="clockDisplay">00:00:00</button> 
+          </form>
+      </div>
+    </div>
+  </nav>
+
+  <div id="xloc_workspace"></div>
+
+  <div id="terminal_backstore" style="display: none">
+    <div id="xloc_terminal">
+    </div>
+  </div>
+
+  <script src="js/winbox.bundle.min.js" async></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/xterm.min.js"></script>
+  
+  <script src="js/index.js" defer></script>
+  <script type="text/javascript">
+    var clockDisplay = document.getElementById('clockDisplay');
+    function clickTicker() {
+      clockDisplay.textContent = new Date().toISOString().slice(11, 19);
+    }
+    clickTicker();
+    setInterval(clickTicker, 1000);
+  </script>
+</body>
+
+</html>

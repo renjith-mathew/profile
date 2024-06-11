@@ -1,49 +1,68 @@
 <!DOCTYPE html>
-<html style="font-size:0.7em">
+<html>
 
 <head>
   <link rel="preload" href="js/winbox.bundle.min.js" as="script" />
   <link href="css/bootstrap.min.css" rel="stylesheet" />
   <link href="css/bootstrap-icons.min.css" rel="stylesheet" />
   <link href="css/xterm.min.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet" />
 </head>
 
-<body style="background-image:url('images/wallpaper.png');background-attachment:fixed;background-repeat: no-repeat;background-position: center center;">
+<body onload="setupSystem()">
 
-
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-sm" style="background-color: #b0b0b0;">
     <div class="container-fluid">
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item dropdown">
 
-            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"  data-bs-toggle="dropdown" >
+            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
               <img src="images/menu.png" alt="Menu" width="16" height="16">
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#" onclick="openAbout()"><i class="bi bi-file-person"></i> About</a></li>
-              <li><a class="dropdown-item" href="#" onclick="openSettings()"><i class="bi bi-gear"></i> Settings</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" onclick="openTerminal()"><i class="bi bi-terminal"></i> Terminal</a></li>
-              <li><a class="dropdown-item" href="#" onclick="openWebBrowser()"><i class="bi bi-browser-firefox"></i> Web Browser</a></li>
-              <li><a class="dropdown-item" href="#" onclick="openFileBrowser()"><i class="bi bi-folder"></i> File Browser</a></li>
-              <li><a class="dropdown-item" href="#" onclick="openChat()"><i class="bi bi-chat-left-text"></i> AI Chat</a></li>
-              <li><a class="dropdown-item" href="#" onclick="openEditor()"><i class="bi bi-file-code"></i> Code Editor</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openAbout()"><i class="bi bi-file-person"></i> About</a>
+              </li>
+              <li><a class="dropdown-item" href="#" onclick="openSettings()"><i class="bi bi-gear"></i> Settings</a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#" onclick="openChat()"><i class="bi bi-chat-left-text"></i> AI
+                  Chat</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#" onclick="openTerminal()"><i class="bi bi-terminal"></i> Terminal</a>
+              </li>
+              <li><a class="dropdown-item" href="#" onclick="openWebBrowser()"><i class="bi bi-globe"></i> Web
+                  Browser</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openFileBrowser()"><i class="bi bi-folder"></i> File
+                  Browser</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openEditor()"><i class="bi bi-file-code"></i> Code
+                  Editor</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openArchitectureDesigner()"><i class="bi bi-diagram-2"></i>
+                  Architecture
+                </a></li>
             </ul>
           </li>
           <li class="nav-item">&nbsp;</li>
           <li class="nav-item">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Desktops">
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+            <div class="btn-group btn-group-sm" role="tablist" aria-label="Desktops">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked role="tab"
+                data-bs-toggle="tab" data-bs-target="#desktop1tab">
               <label class="btn btn-outline-secondary" for="btnradio1">1</label>
-            
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" role="tab"
+                data-bs-toggle="tab" data-bs-target="#desktop2tab">
               <label class="btn btn-outline-secondary" for="btnradio2">2</label>
-            
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" role="tab"
+                data-bs-toggle="tab" data-bs-target="#desktop3tab">
               <label class="btn btn-outline-secondary" for="btnradio3">3</label>
-            
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" role="tab"
+                data-bs-toggle="tab" data-bs-target="#desktop4tab">
               <label class="btn btn-outline-secondary" for="btnradio4">4</label>
             </div>
           </li>
@@ -51,51 +70,150 @@
           <li class="nav-item">
             <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openTerminal()">
               <i class="bi bi-terminal"></i>
-            </button>        
+            </button>
             <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openWebBrowser()">
-              <i class="bi bi-browser-firefox"></i>
-            </button>        
+              <i class="bi bi-globe"></i>
+            </button>
             <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openFileBrowser()">
               <i class="bi bi-folder"></i>
-            </button>        
-            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openChat()">
-              <i class="bi bi-chat-left-text"></i>
-            </button>        
+            </button>
             <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openEditor()">
               <i class="bi bi-file-code"></i>
-            </button>        
+            </button>
+            <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openChat()">
+              <i class="bi bi-chat-left-text"></i>
+            </button>
           </li>
         </ul>
         <form class="d-flex">
-          <button type="button" class="btn btn-outline-secondary  btn-sm"><i class="bi bi-volume-up"></i></button>&nbsp;
-          <button type="button" class="btn btn-outline-secondary  btn-sm"><i class="bi bi-thermometer-half"></i></button>&nbsp;
-          <button type="button" class="btn btn-outline-secondary  btn-sm"><i class="bi bi-wifi"></i></button>&nbsp;
-          <button type="button" class="btn btn-outline-secondary  btn-sm"  id="clockDisplay">00:00:00</button> 
-          </form>
+          <button type="button" class="btn btn-outline-secondary  btn-sm" data-bs-toggle="popover"
+            data-bs-placement="bottom" data-bs-target-html="taskbar-volume-content" data-bs-trigger="click"><i
+              class="bi bi-volume-up"></i></button>&nbsp;
+          <button type="button" class="btn btn-outline-secondary  btn-sm" data-bs-toggle="popover"
+            data-bs-placement="bottom" data-bs-target-html="taskbar-perf-content" data-bs-trigger="focus"><i
+              class="bi bi-thermometer-half"></i></button>&nbsp;
+          <button type="button" class="btn btn-outline-secondary  btn-sm" data-bs-toggle="popover"
+            data-bs-placement="bottom" data-bs-target-html="taskbar-net-content" data-bs-trigger="focus"><i
+              class="bi bi-wifi"></i></button>&nbsp;
+          <button type="button" class="btn btn-outline-secondary  btn-sm" data-bs-toggle="popover" id="clockDisplay"
+            data-bs-placement="bottom" data-bs-target-html="taskbar-clock-content">00:00:00</button>
+        </form>
       </div>
     </div>
   </nav>
 
-  <div id="xloc_workspace"></div>
+  <div id="xloc_workspace" class="m-2">
 
-  <div id="terminal_backstore" style="display: none">
-    <div id="xloc_terminal">
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="desktop1tab" role="tabpanel" aria-labelledby="desktop1-tab"
+        tabindex="0">
+      </div>
+      <div class="tab-pane fade" id="desktop2tab" role="tabpanel" aria-labelledby="desktop2-tab" tabindex="0">
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openAbout()">
+              <i class="bi bi-file-earmark-pdf"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Profile</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openTerminal()">
+              <i class="bi bi-terminal"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Terminal</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openFileBrowser()">
+              <i class="bi bi-pc-display-horizontal"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Computer</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openChat()">
+              <i class="bi bi-chat-left-text"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Chat</p>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="desktop3tab" role="tabpanel" aria-labelledby="desktop3-tab" tabindex="0">
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openTextEditor()">
+              <i class="bi bi-card-text"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Text Editor</p>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="desktop4tab" role="tabpanel" aria-labelledby="desktop4-tab" tabindex="0">
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openCalculator()">
+              <i class="bi bi-calculator"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Calculator</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <script src="js/winbox.bundle.min.js" async></script>
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script src="js/xterm.min.js"></script>
-  
-  <script src="js/index.js" defer></script>
-  <script type="text/javascript">
-    var clockDisplay = document.getElementById('clockDisplay');
-    function clickTicker() {
-      clockDisplay.textContent = new Date().toISOString().slice(11, 19);
-    }
-    clickTicker();
-    setInterval(clickTicker, 1000);
-  </script>
+    <div id="dock-container">
+      <div id="dock">
+        <ul>
+          <li><span>Terminal</span> <button type="button" class="btn btn-outline-secondary  btn-sm"
+              onclick="openTerminal()">
+              <i class="bi bi-terminal"></i>
+            </button></li>
+          <li><span>AI Chat</span> <button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openChat()">
+              <i class="bi bi-chat-left-text"></i>
+            </button></li>
+          <li><span>Profile</span><button type="button" class="btn btn-outline-secondary  btn-sm" onclick="openAbout()">
+              <i class="bi bi-file-earmark-pdf"></i>
+            </button></li>
+        </ul>
+        <div class="base"></div>
+      </div>
+    </div>
+
+    <div id="terminal_backstore" class="d-none">
+      <div id="xloc_terminal">
+      </div>
+    </div>
+    <div id="theia_ide_backstore" class="d-none">
+      <div id="theia_ide_content">
+      </div>
+    </div>
+    <div id="profile_backstore" class="d-none">
+      <div id="profile_content">
+      </div>
+    </div>
+    <div id="chat_backstore" class="d-none">
+      <div id="chat_content">
+      </div>
+    </div>
+    <div class="d-none">
+      <div id="taskbar-volume-content"><input type="range" orient="vertical" min="1" max="10" value="5" /></div>
+    </div>
+    <div class="d-none">
+      <div id="taskbar-perf-content">https://developer.mozilla.org/en-US/docs/Web/API/Performance</div>
+    </div>
+    <div class="d-none">
+      <div id="taskbar-net-content">Connected</div>
+    </div>
+    <div class="d-none">
+      <div id="taskbar-clock-content">Data</div>
+    </div>
+    <script src="js/winbox.bundle.min.js" async></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/xterm.min.js"></script>
+    <script src="js/index.js" defer></script>
 </body>
 
 </html>

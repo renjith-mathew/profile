@@ -1,0 +1,123 @@
+html {
+	font-size: 0.875em
+}
+
+body {
+	background-image: url('../images/wallpaper.png');
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: center center;
+	overflow-x: hidden !important;
+	margin: 0;
+}
+
+input[type=range][orient=vertical] {
+	writing-mode: vertical-lr;
+	direction: rtl;
+	appearance: slider-vertical;
+	width: 16px;
+	vertical-align: bottom;
+	accent-color: #696969;
+}
+
+
+.desk_icon_text {
+	font-size: 0.875em;
+}
+
+.desk_icon_logo {
+	visibility: visible;
+}
+
+#dock-container {
+	position: fixed;
+	bottom: 0;
+	text-align: center;
+	width: 100%;
+}
+
+#dock {
+	position: relative;
+	display: inline-block;
+	-webkit-perspective: 400;
+	-moz-perspective: 400;
+}
+
+#dock .base {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 45px;
+	z-index: -10;
+	background-color: #888;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#333), to(#ccc));
+	background-image: -webkit-linear-gradient(top, #333, #999);
+	background-image: -moz-linear-gradient(top, #333, #999);
+	opacity: .5;
+	border-bottom: 2px #aaa solid;
+	-webkit-transform-origin: 50% 100%;
+	-webkit-transform: rotateX(55deg);
+	-moz-transform-origin: 50% 100%;
+	-moz-transform: rotateX(55deg);
+	-o-transform-origin: 50% 100%;
+	-o-transform: rotateX(55deg);
+}
+
+#dock ul {
+	font-size: 14px;
+	padding: 0 30px;
+	margin: 0;
+}
+
+#dock li {
+	list-style-type: none;
+	display: inline-block;
+	position: relative;
+}
+
+#dock li span {
+	display: none;
+	position: absolute;
+	bottom: 140px;
+	left: 0;
+	width: 100%;
+	background-color: rgba(100, 100, 100, .75);
+	padding: 4px 0;
+	border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+}
+
+#dock li:hover span {
+	display: block;
+}
+
+#dock li button {
+	width: 64px;
+	height: 64px;
+	margin-bottom: 10px;
+	-webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent),
+			color-stop(0.7, transparent), to(rgba(255, 255, 255, .5)));
+	-webkit-box-reflect: below 2px -webkit-linear-gradient(top, transparent, rgba(255, 255, 255, .3));
+	-webkit-transition: all 0.3s;
+	-webkit-transform-origin: 50% 100%;
+	-moz-transition: all 0.4s;
+	-moz-transform-origin: 50% 100%;
+	-o-transition: all 0.3s;
+	-o-transform-origin: 50% 100%;
+}
+
+#dock li:hover button {
+	-webkit-transform: scale(2);
+	-moz-transform: scale(2);
+	-o-transform: scale(2);
+	margin: 0 2em 10px;
+}
+
+#dock li:hover+li button,
+#dock li.prev button {
+	-webkit-transform: scale(1.4);
+	-moz-transform: scale(1.4);
+	-o-transform: scale(1.4);
+	margin: 0 1.4em 10px;
+}

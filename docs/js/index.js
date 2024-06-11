@@ -1,43 +1,47 @@
-function openTerminal() {	
-	if ('xloc_terminal_obj' in window) {
-		window.xloc_terminal_obj.winbox_terminal_obj.minimize(false);
+function checkIfExists(varName) {
+	if (varName in window) {
+		window[varName].winbox_win_obj.minimize(false);
+		return true;
+	}
+	return false;
+}
+
+function openTerminal() {
+	if (checkIfExists("xloc_terminal_obj")) {
 		return;
 	}
-	window.xloc_terminal_obj = new Terminal({
-		cursorBlink: true, rows:21
+	xloc_terminal_obj = new Terminal({
+		cursorBlink: true
 	});
-
-
-	window.xloc_terminal_obj.command = '';
-	window.xloc_terminal_obj.onData(e => {
+	xloc_terminal_obj.command = '';
+	xloc_terminal_obj.onData(e => {
 		if (e === '\r') {
 			executeTerminalCommand();
 		} else if (e === '\x7F') {
-			if (window.xloc_terminal_obj.command.length > 0) {
-				window.xloc_terminal_obj.write('\b \b');
-				window.xloc_terminal_obj.command = window.xloc_terminal_obj.command.slice(0, -1);
+			if (xloc_terminal_obj.command.length > 0) {
+				xloc_terminal_obj.write('\b \b');
+				xloc_terminal_obj.command = xloc_terminal_obj.command.slice(0, -1);
 			}
 		} else {
-			window.xloc_terminal_obj.write(e);
-			window.xloc_terminal_obj.command += e;
+			xloc_terminal_obj.write(e);
+			xloc_terminal_obj.command += e;
 		}
-	});	
-
-	window.xloc_terminal_obj.open(document.getElementById('xloc_terminal'));
+	});
+	xloc_terminal_obj.open(document.getElementById('xloc_terminal'));
 	writeNewTerminalLine();
-
-	window.xloc_terminal_obj.winbox_terminal_obj = new WinBox("Terminal",
+	xloc_terminal_obj.winbox_win_obj = new WinBox("Terminal",
 		{
 			root: document.getElementById('xloc_workspace'),
 			mount: document.getElementById("xloc_terminal"),
 			x: "center",
-    		y: "center",
-			onclose: function(force){
-				window.xloc_terminal_obj.dispose();
-				delete window.xloc_terminal_obj;
+			y: "center",
+			height: "446px",
+			onclose: function (force) {
+				xloc_terminal_obj.dispose();
+				delete xloc_terminal_obj;
 			},
-			oncreate: function(options){
-				window.xloc_terminal_obj.focus();
+			oncreate: function (options) {
+				xloc_terminal_obj.focus();
 			},
 			class: ["no-full"],
 			icon: "images/terminal.svg"
@@ -47,14 +51,10 @@ function openTerminal() {
 function openAbout() {
 	new WinBox({
 		title: "About",
-		html: "<h1>&nbsp;About</h1><div>&nbsp;<a href='https://github.com/renjith-mathew' target='_blank'>github.com/renjith-mathew</a></div>",
+		html: "<div>&nbsp;Visit the github url</div>",
 		x: "center",
 		y: "center",
-		width: 200,
-		height: 200,
-		border: "0.3em",
-		background: "#808080",
-		class: ["no-full","no-max"],
+		class: ["no-full", "no-max"],
 	});
 }
 
@@ -78,28 +78,80 @@ function openEditor() {
 
 }
 
-function writeNewTerminalLine() {
-	window.xloc_terminal_obj.write('\n\r $ ');
+function openTextEditor() {
+
 }
 
-function executeTerminalCommand() {	
-	const input = window.xloc_terminal_obj.command.trim();
-	window.xloc_terminal_obj.command = '';
-    const args = input.split(' ');
-    const command = args[0];
-    const params = args.slice(1).join(' ');
+function openCalculator() {
+	
+}
 
-    switch (command) {
-        case 'echo':
-            window.xloc_terminal_obj.write('\n\r '+ params);
+function openArchitectureDesigner(){
+
+}
+
+function writeNewTerminalLine() {
+	xloc_terminal_obj.write('\n\r $ ');
+}
+
+function executeTerminalCommand() {
+	const input = xloc_terminal_obj.command.trim();
+	xloc_terminal_obj.command = '';
+	const args = input.split(' ');
+	const command = args[0];
+	const params = args.slice(1).join(' ');
+
+	switch (command) {
+		case 'echo':
+			xloc_terminal_obj.write('\n\r ' + params);
 			writeNewTerminalLine()
-            break;
-        case 'clear':
-            window.xloc_terminal_obj.clear();
+			break;
+		case 'clear':
+			xloc_terminal_obj.clear();
 			writeNewTerminalLine()
-            break;
-        default:
-            window.xloc_terminal_obj.write(`\n\r Command not found: ${command}`);
+			break;
+		default:
+			xloc_terminal_obj.write(`\n\r Command not found: ${command}`);
 			writeNewTerminalLine();
-    }
+	}
+}
+
+function setupSystem() {
+	var clockDisplay = document.getElementById('clockDisplay');
+	function clickTicker() {
+		clockDisplay.textContent = new Date().toISOString().slice(11, 19);
+	}
+	clickTicker();
+	setInterval(clickTicker, 1000);
+	const popoverList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+	popoverList.map((popEl) => {
+		let popConfig = {
+			animation: false
+		}
+		if (popEl.hasAttribute('data-bs-target-html')) {
+			popConfig.content = document.getElementById(popEl.getAttribute('data-bs-target-html'));
+			popConfig.html = true;
+		}
+		new bootstrap.Popover(popEl, popConfig);
+	});
+	if (window.addEventListener) {
+		document.getElementById('dock').addEventListener('mouseover', addPrevClass, false);
+	}	
+}
+
+function addPrevClass (e) {
+	var target = e.target;
+	if(target.getAttribute('type')==='button') { 
+		var li = target.parentNode.parentNode;
+		var prevLi = li.previousElementSibling;
+		if(prevLi) {
+			prevLi.className = 'prev';
+		}
+	
+		target.addEventListener('mouseout', function(){
+			if(prevLi) {
+				prevLi.removeAttribute('class');
+			}
+		}, false);
+	}
 }

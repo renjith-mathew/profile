@@ -20,10 +20,26 @@ input[type=range][orient=vertical] {
 	accent-color: #696969;
 }
 
+input:user-invalid {
+	border: 2px solid red;
+}
+
+.wb-header {
+	background-color: #696969;
+}
+
+.wb-body {
+	background-color: auto;
+}
 
 .desk_icon_text {
 	font-size: 0.875em;
 }
+
+.file_browser_text {
+	font-size: 0.875em;
+}
+
 
 .desk_icon_logo {
 	visibility: visible;
@@ -49,10 +65,10 @@ input[type=range][orient=vertical] {
 	width: 100%;
 	height: 45px;
 	z-index: -10;
-	background-color: #888;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#333), to(#ccc));
-	background-image: -webkit-linear-gradient(top, #333, #999);
-	background-image: -moz-linear-gradient(top, #333, #999);
+	background-color: #bbb;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#ddd));
+	background-image: -webkit-linear-gradient(top, #aaa, #ddd);
+	background-image: -moz-linear-gradient(top, #aaa, #ddd);
 	opacity: .5;
 	border-bottom: 2px #aaa solid;
 	-webkit-transform-origin: 50% 100%;
@@ -81,7 +97,7 @@ input[type=range][orient=vertical] {
 	bottom: 140px;
 	left: 0;
 	width: 100%;
-	background-color: rgba(100, 100, 100, .75);
+	background-color: rgba(200, 200, 200, .75);
 	padding: 4px 0;
 	border-radius: 12px;
 	-webkit-border-radius: 12px;

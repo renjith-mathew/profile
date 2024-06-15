@@ -616,10 +616,12 @@ function setupSystem() {
 	document.addEventListener("click", function (event) {
 		document.getElementById("file-context-menu").style.display = 'none';
 	});
+
+	initFileSystem();
 }
 
 function initFileSystem() {
 	try {
-		window.rmx_fs = new LightningFS('rmx_fs_indexed_db');
+		rmx_fs = new LightningFS('rmx_fs_indexed_db');
 	} catch (e) { console.log(e); }
 }

@@ -55,7 +55,7 @@ function openAbout() {
 		return;
 	}
 	rmx_profile_obj = new Object();
-	rmx_profile_obj.winbox_win_obj = new WinBox("Profile",
+	rmx_profile_obj.winbox_win_obj = new WinBox("About",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("profile_content"),
@@ -84,7 +84,8 @@ function openSettings() {
 		  <td>View Profile</td>
 		  <td><a class="dropdown-item" href="profile.pdf" target="_blank"><i class="bi bi-window-plus"></i></a></td>
 		</tr>
-		<tr><td>Language Model Settings</td><td>Temperature: 0.7</td></tr>		
+		<tr><td>Language Model Settings</td><td>Temperature: 0.7</td></tr>	
+		<tr><td>About</td><td>This is a UI prototype | Not for real use</td></tr>	
 	  </table>`,
 		x: "center",
 		y: "center",
@@ -141,7 +142,7 @@ function openChat() {
 		return;
 	}
 	rmx_ai_chat_obj = new Object();
-	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model",
+	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model of less than 1M parameters",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("chat_content"),
@@ -196,7 +197,7 @@ function openMathAssistant() {
 		return;
 	}
 	rmx_MathAssistant_obj = new Object();
-	rmx_MathAssistant_obj.winbox_win_obj = new WinBox("Math Model - This is a simple test model. Do not rely on the output.",
+	rmx_MathAssistant_obj.winbox_win_obj = new WinBox("Math Model - This is a simple RAG test model. Do not rely on the output.",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("MathAssistant_content"),
@@ -215,7 +216,7 @@ function openArchitectureDesigner() {
 		return;
 	}
 	rmx_arch_diagram_obj = new Object();
-	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple test model. Do not deploy to prod.",
+	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple RAG test model. Do not deploy to prod.",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("arch_diagram_content"),
@@ -407,7 +408,6 @@ function executeTerminalCommand() {
 
 function toggleTheme() {
 	let htmlElm = document.documentElement;
-	let winBodyElements = document.getElementsByClassName("wb-body");
 	if (htmlElm.getAttribute("data-bs-theme") === "light") {
 		htmlElm.setAttribute("data-bs-theme", "dark");
 		rmxwinbox_backgroundColor = "rgb(33, 37, 41)";
@@ -415,8 +415,22 @@ function toggleTheme() {
 		htmlElm.setAttribute("data-bs-theme", "light");
 		rmxwinbox_backgroundColor = "#ffffff";
 	}
+	let winBodyElements = document.getElementsByClassName("wb-body");
 	for (let i = 0; i < winBodyElements.length; i++) {
 		winBodyElements[i].style.backgroundColor = rmxwinbox_backgroundColor;
+	}
+	toggleInnerFrameTheme();
+}
+
+function toggleInnerFrameTheme() {
+	let chatFrameElements = document.getElementsByClassName("aixiframe");
+	for (let i = 0; i < chatFrameElements.length; i++) {
+		var iframeEle = chatFrameElements[i].contentDocument.documentElement;
+		if (iframeEle.getAttribute("data-bs-theme") === "light") {
+			iframeEle.setAttribute("data-bs-theme", "dark");
+		} else {
+			iframeEle.setAttribute("data-bs-theme", "light");
+		}
 	}
 }
 
@@ -426,8 +440,8 @@ function loadUrl() {
 
 function getFolderHtml(folder_name) {
 	return ` 
-	<input type="radio" class="btn-check" name="file_list" id="${folder_name}" autocomplete="off" data-bs-item-ftype='dir'>
-  <label class="btn btn-outline-secondary border-0" for="${folder_name}"><i class="bi bi-folder2"></i> ${folder_name}</label>
+	<div ondblclick="ctxOpenFile()"><input type="radio" class="btn-check" name="file_list" id="${folder_name}" autocomplete="off" data-bs-item-ftype='dir'>
+  <label class="btn btn-outline-secondary border-0" for="${folder_name}"><i class="bi bi-folder2"></i> ${folder_name}</label></div>
   `;
 }
 
@@ -437,8 +451,8 @@ function getFileHtml(file_name) {
 	if (file_name.includes('.')) {
 		fileTypeIcon = 'bi-filetype-' + file_name.split('.').pop();
 	}
-	return `<input type="radio" class="btn-check" name="file_list" id="${file_name}" autocomplete="off" data-bs-item-ftype='file'>	
-	<label class="btn btn-outline-secondary border-0" for="${file_name}"><i class="bi bi-file-earmark ${fileTypeIcon}"></i> ${file_name}</label>`;
+	return `<div><input type="radio" class="btn-check" name="file_list" id="${file_name}" autocomplete="off" data-bs-item-ftype='file'>	
+	<label class="btn btn-outline-secondary border-0" for="${file_name}"><i class="bi bi-file-earmark ${fileTypeIcon}"></i> ${file_name}</label></div>`;
 }
 
 function loadParentFilePath() {
@@ -517,10 +531,10 @@ function addPrevClass(e) {
 	}
 }
 
-function getSelectedItem(){
+function getSelectedItem() {
 	var fileItems = document.getElementsByName('file_list');
-	for(let i=0;i<fileItems.length;i++){
-		if(fileItems[i].checked){
+	for (let i = 0; i < fileItems.length; i++) {
+		if (fileItems[i].checked) {
 			return document.getElementById(fileItems[i].id);
 		}
 	}
@@ -528,10 +542,10 @@ function getSelectedItem(){
 
 function ctxOpenFile() {
 	let selectedItem = getSelectedItem();
-	if(selectedItem) {
+	if (selectedItem) {
 		let selectedPath = document.getElementById('filePathInput').value;
-		let targetPath = buildPathBrowser(selectedPath,selectedItem.id);
-		if(selectedItem.getAttribute('data-bs-item-ftype')==='dir'){			
+		let targetPath = buildPathBrowser(selectedPath, selectedItem.id);
+		if (selectedItem.getAttribute('data-bs-item-ftype') === 'dir') {
 			document.getElementById('filePathInput').value = targetPath;
 			loadFilePath();
 		} else {
@@ -542,36 +556,36 @@ function ctxOpenFile() {
 
 function ctxDeleteFile() {
 	let selectedItem = getSelectedItem();
-	if(selectedItem) {
+	if (selectedItem) {
 		let selectedPath = document.getElementById('filePathInput').value;
-		let targetPath = buildPathBrowser(selectedPath,selectedItem.id);
+		let targetPath = buildPathBrowser(selectedPath, selectedItem.id);
 		checkForValidPath(targetPath)
-		.then((pathType) => {
-			if (pathType === 'dir'||pathType === 'file') {				
-				if(selectedItem.getAttribute('data-bs-item-ftype')==='dir'){			
-					rmx_fs.promises.rmdir(targetPath).then((value) => {
-						loadFilePath();
-					}).catch((error) => {
-						alert(`error: ${error}`);
-					});					
+			.then((pathType) => {
+				if (pathType === 'dir' || pathType === 'file') {
+					if (selectedItem.getAttribute('data-bs-item-ftype') === 'dir') {
+						rmx_fs.promises.rmdir(targetPath).then((value) => {
+							loadFilePath();
+						}).catch((error) => {
+							alert(`error: ${error}`);
+						});
+					} else {
+						rmx_fs.promises.unlink(targetPath).then((value) => {
+							loadFilePath();
+						}).catch((error) => {
+							console.log(`error: ${error}`);
+						});
+					}
 				} else {
-					rmx_fs.promises.unlink(targetPath).then((value) => {
-						loadFilePath();
-					}).catch((error) => {
-						console.log(`error: ${error}`);
-					});
+
 				}
-			} else {
-				
-			}
-		});
+			});
 
 	}
 }
 
+rmxwinbox_backgroundColor = "#ffffff";
 
-function setupSystem() {
-	rmxwinbox_backgroundColor = "#ffffff";
+function setupSystem() {	
 	try {
 		var clockDisplay = document.getElementById('clockDisplay');
 		function clickTicker() {
@@ -591,6 +605,8 @@ function setupSystem() {
 			}
 			popEl.popOverObject = new bootstrap.Popover(popEl, popConfig);
 		});
+		const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+		const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 	} catch (e) { console.log(e); }
 	if (window.addEventListener) {
 		document.getElementById('dock').addEventListener('mouseover', addPrevClass, false);
@@ -604,7 +620,7 @@ function setupSystem() {
 		});
 	});
 	document.getElementById("file_browser_content_browser").addEventListener('contextmenu', function (event) {
-		if(getSelectedItem()){
+		if (getSelectedItem()) {
 			event.preventDefault();
 			let contextmenu = document.getElementById("file-context-menu");
 			contextmenu.style.left = event.pageX + 'px';

@@ -17,6 +17,7 @@ input[type=range][orient=vertical] {
 	width: 16px;
 	vertical-align: bottom;
 	accent-color: #696969;
+	appearance: slider-vertical;
 }
 
 input:user-invalid {
@@ -24,11 +25,17 @@ input:user-invalid {
 }
 
 .wb-header {
-	background-color: #696969;
+	background-color: #313539;
 }
 
 .wb-body {
-	background-color: auto;
+	background-color: #212529;
+}
+
+.aixiframe {
+	border:0;
+	margin:0;
+	padding:0;
 }
 
 #dock-container {
@@ -51,18 +58,19 @@ input:user-invalid {
 	width: 100%;
 	height: 45px;
 	z-index: -10;
-	background-color: #bbb;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#ddd));
-	background-image: -webkit-linear-gradient(top, #aaa, #ddd);
-	background-image: -moz-linear-gradient(top, #aaa, #ddd);
+	background-color: #212529;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#111), to(#222));
+	background-image: -webkit-linear-gradient(top, #111, #222);
+	background-image: -moz-linear-gradient(top, #111, #222);
 	opacity: .5;
-	border-bottom: 2px #aaa solid;
+	border-bottom: 2px #111 solid;
 	-webkit-transform-origin: 50% 100%;
 	-webkit-transform: rotateX(55deg);
 	-moz-transform-origin: 50% 100%;
 	-moz-transform: rotateX(55deg);
 	-o-transform-origin: 50% 100%;
 	-o-transform: rotateX(55deg);
+	color: #313539;
 }
 
 #dock ul {
@@ -83,7 +91,7 @@ input:user-invalid {
 	bottom: 140px;
 	left: 0;
 	width: 100%;
-	background-color: rgba(200, 200, 200, .75);
+	background-color: rgba(100, 100, 100, .75);
 	padding: 4px 0;
 	border-radius: 12px;
 	-webkit-border-radius: 12px;

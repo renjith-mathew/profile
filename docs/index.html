@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en" data-bs-theme="dark">
 
 <head>
   <link rel="preload" href="js/winbox.bundle.min.js" as="script" />
@@ -10,7 +10,7 @@
 </head>
 
 <body onload="setupSystem()">
-  <nav class="navbar navbar-expand-sm" style="background-color: #dddddd;">
+  <nav class="navbar navbar-expand-sm shadow">
     <div class="container-fluid">
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
@@ -25,14 +25,18 @@
               </li>
               <li><a class="dropdown-item" href="#" onclick="openSettings()"><i class="bi bi-gear"></i> Settings</a>
               </li>
+              <li><a class="dropdown-item" href="#" onclick="toggleTheme()"><i class="bi bi-toggles2"></i> Theme</a>
+              </li>
               <li>
                 <hr class="dropdown-divider">
               </li>
               <li><a class="dropdown-item" href="#" onclick="openChat()"><i class="bi bi-chat-left-text"></i> AI
                   Chat</a></li>
               <li><a class="dropdown-item" href="#" onclick="openArchitectureDesigner()"><i class="bi bi-diagram-2"></i>
-                  Architecture
+                  Arch Chat
                 </a></li>
+              <li><a class="dropdown-item" href="#" onclick="openMathAssistant()"><i class="bi bi-infinity"></i> Math
+                  Chat</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
@@ -84,6 +88,9 @@
             <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" onclick="openEditor()">
               <i class="bi bi-file-code"></i>
             </button>
+            <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" onclick="openMathAssistant()">
+              <i class="bi bi-infinity"></i>
+            </button>
             <button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
               onclick="openArchitectureDesigner()">
               <i class="bi bi-diagram-2"></i>
@@ -95,7 +102,7 @@
         </ul>
         <form class="d-flex">
           <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" onclick='toggleTheme()'><i
-              class='bi bi-toggles2'></i></button>
+              class='bi bi-toggles2' data-bs-toggle="tooltip" data-bs-title="Toggle light or dark theme"></i></button>
           <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" data-bs-toggle="popover"
             data-bs-placement="bottom" data-bs-target-html="taskbar-volume-content" data-bs-trigger="click"><i
               class="bi bi-volume-up"></i></button>&nbsp;
@@ -166,46 +173,53 @@
       <div class="tab-pane fade" id="desktop4tab" role="tabpanel" aria-labelledby="desktop4-tab" tabindex="0">
         <div class="row">
           <div class="col-sm-1 text-center">
-            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openMathAssistant()">
-              <i class="bi bi-infinity"></i>
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openFileBrowser()">
+              <i class="bi bi-folder-fill"></i>
             </button>
-            <p class="mt-2 desk_icon_text">Math Assistant</p>
+            <p class="mt-2 desk_icon_text">File Browser</p>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="dock-container">
-      <div id="dock">
-        <ul>
-          <li><span>Profile</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-              onclick="openAbout()">
-              <i class="bi bi-file-earmark-pdf"></i>
-            </button></li>
-          <li><span>Terminal</span> <button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-              onclick="openTerminal()">
-              <i class="bi bi-terminal"></i>
-            </button></li>
-          <li><span>File Browser</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-              onclick="openFileBrowser()">
-              <i class="bi bi-folder"></i>
-            </button></li>
-          <li><span>Architecture Chat</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-              onclick="openArchitectureDesigner()">
-              <i class="bi bi-diagram-2"></i>
-            </button></li>
-          <li><span>Math Chat</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-              onclick="openMathAssistant()">
-              <i class="bi bi-infinity"></i>
-            </button></li>
-          <li><span>Profile Chat</span> <button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-              onclick="openChat()">
-              <i class="bi bi-chat-left-text"></i>
-            </button></li>
-        </ul>
-        <div class="base"><span style='color:#333333'>UI prototype | Not for real use</span></div>
+    <nav class="navbar fixed-bottom">
+      <div>
+        <div id="dock-container">
+          <div id="dock">
+            <ul>
+              <li><span>Profile</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
+                  onclick="openAbout()">
+                  <i class="bi bi-file-earmark-pdf"></i>
+                </button></li>
+              <li><span>Terminal</span> <button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
+                  onclick="openTerminal()">
+                  <i class="bi bi-terminal"></i>
+                </button></li>
+              <li><span>File Browser</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
+                  onclick="openFileBrowser()">
+                  <i class="bi bi-folder"></i>
+                </button></li>
+              <li><span>Architecture Chat</span><button type="button"
+                  class="btn btn-outline-secondary  btn-sm  border-0" onclick="openArchitectureDesigner()">
+                  <i class="bi bi-diagram-2"></i>
+                </button></li>
+              <li><span>Profile Chat</span> <button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
+                  onclick="openChat()">
+                  <i class="bi bi-chat-left-text"></i>
+                </button></li>
+            </ul>
+            <div class="base"></div>
+
+          </div>
+
+        </div>
+        <div style="position:absolute;right:10px;bottom:10px;">
+          <a class="nav-link" href="pages/terms.html" target="_blank"
+            style="font-size: 0.75em;color:rgb(108, 117, 125)">UI Prototype | Not for real use | Terms</a>
+        </div>
       </div>
-    </div>
+    </nav>
+
     <!-- window contents begin -->
     <div id="terminal_backstore" class="d-none">
       <div id="rmx_terminal">
@@ -223,7 +237,7 @@
     </div>
     <div id="chat_backstore" class="d-none">
       <div id="chat_content">
-        <iframe src="pages/pmodel.html"></iframe>
+        <iframe src="pages/pmodel.html" class="aixiframe"></iframe>
       </div>
     </div>
     <div id="web_browser_backstore" class="d-none">
@@ -240,7 +254,7 @@
                   <td><button type="button" class="btn btn-outline-secondary btm-sm  border-0"><i
                         class="bi bi-arrow-clockwise" onclick="loadUrl()"></i></button></td>
                   <td width="90%"><input type="url" id="urlInput" class="form-control form-control-sm"
-                      placeholder="Enter the Data URI" pattern="data:.*" />
+                      placeholder="Enter the Data URI" pattern="data:.*" value="pages/terms.html"/>
                   </td>
                   <td><button type="button" class="btn btn-outline-secondary btm-sm  border-0"><i class="bi bi-play"
                         onclick="loadUrl()"></i></button></td>
@@ -250,8 +264,8 @@
             </td>
           </tr>
           <tr>
-            <td><iframe id="web_browser_content_iframe" name="web_browser_content_iframe"
-                style="background-color: transparent;"></iframe></td>
+            <td><iframe id="web_browser_content_iframe" name="web_browser_content_iframe" src="pages/terms.html"></iframe>
+            </td>
           </tr>
         </table>
       </div>
@@ -298,12 +312,12 @@
     </div>
     <div id="arch_diagram_backstore" class="d-none">
       <div id="arch_diagram_content">
-        <iframe src="pages/gmodel.html"></iframe>
+        <iframe src="pages/gmodel.html" class="aixiframe"></iframe>
       </div>
     </div>
     <div id="MathAssistant_backstore" class="d-none">
       <div id="MathAssistant_content">
-        <iframe src="pages/cmodel.html"></iframe>
+        <iframe src="pages/cmodel.html" class="aixiframe"></iframe>
       </div>
     </div>
     <div id="text_editor_backstore" class="d-none">
@@ -326,7 +340,9 @@
         </tr>
         <tr>
           <td>
-            <div id="text_editor_cotnent_editable" contenteditable="true" class="border"></div>
+            <div id="text_editor_cotnent_editable" contenteditable="true" class="border">
+              Editor functionality is not built yet
+            </div>
           </td>
         </tr>
         </table>
@@ -376,18 +392,22 @@
       </div>
     </div>
     <div class="d-none">
-      <div id="taskbar-net-content">Connected</div>
+      <div id="taskbar-net-content">
+        <i class="bi bi-router"></i>
+        <i class="bi bi-pci-card-network"></i>
+        <i class="bi bi-hdd-network"></i>
+      </div>
     </div>
     <div class="d-none">
       <div id="taskbar-clock-content">
         <iframe src="pages/calendar.html"></iframe>
       </div>
     </div>
-    <script src="js/winbox.bundle.min.js" async></script>
-    <script src="js/xterm.min.js" async></script>
-    <script src="js/lightning-fs.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/winbox.bundle.min.js"></script>
+    <script src="js/lightning-fs.min.js"></script>
     <script src="js/index.js"></script>
+    <script src="js/xterm.min.js" async></script>
 </body>
 
 </html>

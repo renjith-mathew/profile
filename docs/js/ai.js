@@ -12,6 +12,14 @@ function setUpAISystem(){
 	});
 	transformers_env = __webpack_exports__env;
 	transformers_pipeline = __webpack_exports__pipeline;
+	window.addEventListener("message", function(event) {
+		if (typeof event.data === "object") {
+		  var messageType = event.data.messageType;
+		  if (messageType==='toggleTheme'){
+			toggleTheme();
+		  }
+		}
+	  });
 }
 
 function webGpuTokens() {
@@ -50,4 +58,13 @@ function archWebGpuTokens() {
 function clearArchChat() {
 	document.getElementById("archPromptInput").value = "";
 	document.getElementById("arch_diagram_Output").innerHTML = "";
+}
+
+function toggleTheme() {
+	let htmlElm = document.documentElement;
+	if (htmlElm.getAttribute("data-bs-theme") === "light") {
+		htmlElm.setAttribute("data-bs-theme", "dark");
+	} else {
+		htmlElm.setAttribute("data-bs-theme", "light");
+	}
 }

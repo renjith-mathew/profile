@@ -55,7 +55,7 @@ function openAbout() {
 		return;
 	}
 	rmx_profile_obj = new Object();
-	rmx_profile_obj.winbox_win_obj = new WinBox("About",
+	rmx_profile_obj.winbox_win_obj = new WinBox("Profile",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("profile_content"),
@@ -75,7 +75,17 @@ function openSettings() {
 	rmx_settings_obj = new Object();
 	rmx_settings_obj.winbox_win_obj = new WinBox({
 		title: "Settings",
-		html: "<table><tr><td>Theme</td><td><a class='nav-link' href='#' onclick='toggleTheme()'><i class='bi bi-toggles2'></i></a></td></tr></table>",
+		html: ` <table class="table table-sm">
+		<tr>
+		  <td>Change Theme</td>
+		  <td><a class='nav-link' href='#' onclick='toggleTheme()'><i class='bi bi-toggles2'></i></a></td>
+		</tr>
+		<tr>
+		  <td>View Profile</td>
+		  <td><a class="dropdown-item" href="profile.pdf" target="_blank"><i class="bi bi-window-plus"></i></a></td>
+		</tr>
+		<tr><td>Language Model Settings</td><td>Temperature: 0.7</td></tr>		
+	  </table>`,
 		x: "center",
 		y: "center",
 		background: rmxwinbox_backgroundColor,
@@ -91,7 +101,7 @@ function openWebBrowser() {
 		return;
 	}
 	rmx_web_browser_obj = new Object();
-	rmx_web_browser_obj.winbox_win_obj = new WinBox("Web Browser",
+	rmx_web_browser_obj.winbox_win_obj = new WinBox("Web Browser - Not for real use",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("web_browser_content"),
@@ -121,6 +131,7 @@ function openFileBrowser() {
 			},
 			onclose: function (force) {
 				delete rmx_file_browser_obj;
+				closeNewFileBrowser();
 			}
 		});
 }
@@ -130,7 +141,7 @@ function openChat() {
 		return;
 	}
 	rmx_ai_chat_obj = new Object();
-	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat",
+	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("chat_content"),
@@ -204,7 +215,7 @@ function openArchitectureDesigner() {
 		return;
 	}
 	rmx_arch_diagram_obj = new Object();
-	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Designer- This is a simple test model. Do not deploy to prod.",
+	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple test model. Do not deploy to prod.",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("arch_diagram_content"),
@@ -226,7 +237,7 @@ function writeTerminalLine(str_message) {
 	writeNewTerminalLine();
 }
 
-function buildPathBrowser(root_path,new_path) {  //basic with no wildcard expansion
+function buildPathBrowser(root_path, new_path) {  //basic with no wildcard expansion
 	if (new_path === '.') {
 		return root_path;
 	} else if (new_path === '..') {
@@ -235,7 +246,7 @@ function buildPathBrowser(root_path,new_path) {  //basic with no wildcard expans
 			parent_path = "/";
 		}
 		return parent_path;
-	} else if (root_path==='/' && new_path==='/') {
+	} else if (root_path === '/' && new_path === '/') {
 		return root_path;
 	}
 	if (new_path.startsWith('/')) {
@@ -251,12 +262,12 @@ function buildPathBrowser(root_path,new_path) {  //basic with no wildcard expans
 }
 
 function buildPathTerminal(new_path) {
-	return buildPathBrowser(rmx_terminal_obj.current_dir,new_path);
+	return buildPathBrowser(rmx_terminal_obj.current_dir, new_path);
 }
 
 async function checkForValidPath(new_path) {
 	try {
-		new_path = buildPathBrowser('',new_path);
+		new_path = buildPathBrowser('', new_path);
 		const statResult = await rmx_fs.promises.stat(new_path);
 		return statResult['type'];
 	} catch (e) {
@@ -384,56 +395,15 @@ function executeTerminalCommand() {
 			rmx_terminal_obj.clear();
 			writeNewTerminalLine();
 			break;
+		case 'exit':
+			rmx_terminal_obj.winbox_win_obj.close();
+			break;
 		default:
 			writeTerminalLine(`Command not found: ${command}`);
 	}
 
 }
 
-function setupSystem() {
-	rmxwinbox_backgroundColor = "#ffffff";
-	try {
-		var clockDisplay = document.getElementById('clockDisplay');
-		function clickTicker() {
-			let dateStr = new Date().toString();
-			clockDisplay.textContent = dateStr.slice(16, 21) + " " + dateStr.slice(4, 10);
-		}
-		clickTicker();
-		setInterval(clickTicker, 30000);//approx
-	} catch (e) { console.log(e); }
-	try {
-		const popoverList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-		popoverList.map((popEl) => {
-			let popConfig = {
-				animation: false
-			}
-			if (popEl.hasAttribute('data-bs-target-html')) {
-				popConfig.content = document.getElementById(popEl.getAttribute('data-bs-target-html'));
-				popConfig.html = true;
-			}
-			new bootstrap.Popover(popEl, popConfig);
-		});
-	} catch (e) { console.log(e); }
-	if (window.addEventListener) {
-		document.getElementById('dock').addEventListener('mouseover', addPrevClass, false);
-	}
-	try {
-		window.rmx_fs = new LightningFS('rmx_fs_indexed_db');
-	} catch (e) { console.log(e); }
-	let enterTriggerElements = [['chatInput', webGpuTokens], ['calcInput', mathWebGpuTokens], ['archPromptInput', archWebGpuTokens], ['urlInput', loadUrl], ['filePathInput', loadFilePath]]
-	enterTriggerElements.forEach(function (pair) {
-		document.getElementById(pair[0]).addEventListener('keypress', function (event) {
-			if (event.key === 'Enter') {
-				pair[1]();
-			}
-		});
-	});
-	try {
-		Viz.instance().then(function (viz) {
-			document.getElementById("arch_diagram_Output").appendChild(viz.renderSVGElement("digraph { source -> sink }"));
-		});
-	} catch (e) { console.log(e); }
-}
 
 function toggleTheme() {
 	let htmlElm = document.documentElement;
@@ -454,43 +424,47 @@ function loadUrl() {
 	document.getElementById("web_browser_content_iframe").src = document.getElementById("urlInput").value;
 }
 
-function getFolderHtml(folder_name){
-	return ` <div class="col-sm-1 text-center">
-	<button type="button" class="btn btn-outline-secondary  btn-sm border-0">
-	  <i class="bi bi-folder2"></i>
-	</button>
-	<p class="mt-2 file_browser_text">${folder_name}</p>
-  </div>`;
+function getFolderHtml(folder_name) {
+	return ` 
+	<input type="radio" class="btn-check" name="file_list" id="${folder_name}" autocomplete="off" data-bs-item-ftype='dir'>
+  <label class="btn btn-outline-secondary border-0" for="${folder_name}"><i class="bi bi-folder2"></i> ${folder_name}</label>
+  `;
 }
 
-function getFileHtml(file_name){
-	return ` <div class="col-sm-1 text-center">
-	<button type="button" class="btn btn-outline-secondary  btn-sm border-0">
-	  <i class="bi bi-file-earmark"></i>
-	</button>
-	<p class="mt-2 file_browser_text">${file_name}</p>
-  </div>`;
+
+function getFileHtml(file_name) {
+	let fileTypeIcon = '';
+	if (file_name.includes('.')) {
+		fileTypeIcon = 'bi-filetype-' + file_name.split('.').pop();
+	}
+	return `<input type="radio" class="btn-check" name="file_list" id="${file_name}" autocomplete="off" data-bs-item-ftype='file'>	
+	<label class="btn btn-outline-secondary border-0" for="${file_name}"><i class="bi bi-file-earmark ${fileTypeIcon}"></i> ${file_name}</label>`;
 }
 
+function loadParentFilePath() {
+	let parentPath = buildPathBrowser(document.getElementById('filePathInput').value, '..');
+	document.getElementById('filePathInput').value = parentPath;
+	loadFilePath();
+}
 
 function loadFilePath() {
 	let selectedPath = document.getElementById('filePathInput').value;
 	document.getElementById("file_browser_content_browser").innerHTML = '';
 	checkForValidPath(selectedPath)
 		.then((pathType) => {
-			if (pathType === 'dir') {				
+			if (pathType === 'dir') {
 				rmx_fs.promises.readdir(selectedPath, '').then((value) => {
-					for(let i=0;i<value.length;i++){
-						let itemPath = buildPathBrowser(selectedPath,value[i]);
+					for (let i = 0; i < value.length; i++) {
+						let itemPath = buildPathBrowser(selectedPath, value[i]);
 						checkForValidPath(itemPath)
-						.then((pathType) => {
-							if (pathType === 'file') {
-								document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML+getFileHtml(value[i]);
-							} else if (pathType === 'dir') {
-								document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML+getFolderHtml(value[i]);
-							} 
-						});
-					}					
+							.then((pathType) => {
+								if (pathType === 'file') {
+									document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML + getFileHtml(value[i]);
+								} else if (pathType === 'dir') {
+									document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML + getFolderHtml(value[i]);
+								}
+							});
+					}
 				})
 			} else {
 				document.getElementById("file_browser_content_browser").innerHTML = '<div class="alert alert-danger" role="alert">Invalid path</div>';
@@ -499,50 +473,32 @@ function loadFilePath() {
 }
 
 function saveNewFileBrowser(isFile) {
-
+	let selectedPath = document.getElementById('filePathInput').value;
+	if (isFile) {
+		let targetPath = document.getElementById('file_browser_newfile-content_val').value;
+		let newTargetFile = buildPathBrowser(selectedPath, targetPath);
+		rmx_fs.promises.writeFile(newTargetFile, new Date().toISOString()).then((value) => {
+			loadFilePath();
+		}).catch((error) => {
+			console.log(error);
+		});
+	} else {
+		let targetPath = document.getElementById('file_browser_newfolder-content_val').value;
+		let newTargetDirectory = buildPathBrowser(selectedPath, targetPath);
+		rmx_fs.promises.mkdir(newTargetDirectory).then((value) => {
+			loadFilePath();
+		}).catch((error) => {
+			console.log(error);
+		});
+	}
+	closeNewFileBrowser();
 }
 
-function cancelNewFileBrowser(isFile) {
-
+function closeNewFileBrowser() {
+	document.getElementById("file_browser_newfile-content-popover").popOverObject.hide();
+	document.getElementById("file_browser_newfolder-content-popover").popOverObject.hide();
 }
 
-function webGpuTokens() {
-	let inputContent = document.getElementById("chatInput").value;
-	document.getElementById("chatInput").value = "Waiting for neural network results ...";
-	var chatResponse = "Not implemented yet";
-	document.getElementById("chatInput").value = "";
-	document.getElementById("chatHistory").innerHTML = "<br/>User: " + inputContent + "<br/>Model: " + chatResponse + "<br/>" + document.getElementById("chatHistory").innerHTML;
-}
-function clearChat() {
-	document.getElementById("chatInput").value = "";
-	document.getElementById("chatHistory").innerHTML = "";
-}
-
-function mathWebGpuTokens() {
-	let inputContent = document.getElementById("calcInput").value;
-	document.getElementById("calcInput").value = "Waiting for neural network results ...";
-	var chatResponse = "Not implemented yet";
-	document.getElementById("calcInput").value = "";
-	document.getElementById("MathAssistantOutput").innerHTML = "<br/>User: " + inputContent + "<br/>Model: " + chatResponse + "<br/>";
-}
-
-function clearMathChat() {
-	document.getElementById("calcInput").value = "";
-	document.getElementById("MathAssistantOutput").innerHTML = "";
-}
-
-function archWebGpuTokens() {
-	let inputContent = document.getElementById("archPromptInput").value;
-	document.getElementById("archPromptInput").value = "Waiting for neural network results ...";
-	var chatResponse = "Not implemented yet";
-	document.getElementById("archPromptInput").value = "";
-	document.getElementById("arch_diagram_Output").innerHTML = "<br/>User: " + inputContent + "<br/>Model: " + chatResponse + "<br/>";
-}
-
-function clearArchChat() {
-	document.getElementById("archPromptInput").value = "";
-	document.getElementById("arch_diagram_Output").innerHTML = "";
-}
 
 function addPrevClass(e) {
 	var target = e.target;
@@ -559,4 +515,111 @@ function addPrevClass(e) {
 			}
 		}, false);
 	}
+}
+
+function getSelectedItem(){
+	var fileItems = document.getElementsByName('file_list');
+	for(let i=0;i<fileItems.length;i++){
+		if(fileItems[i].checked){
+			return document.getElementById(fileItems[i].id);
+		}
+	}
+}
+
+function ctxOpenFile() {
+	let selectedItem = getSelectedItem();
+	if(selectedItem) {
+		let selectedPath = document.getElementById('filePathInput').value;
+		let targetPath = buildPathBrowser(selectedPath,selectedItem.id);
+		if(selectedItem.getAttribute('data-bs-item-ftype')==='dir'){			
+			document.getElementById('filePathInput').value = targetPath;
+			loadFilePath();
+		} else {
+			openTextEditor();
+		}
+	}
+}
+
+function ctxDeleteFile() {
+	let selectedItem = getSelectedItem();
+	if(selectedItem) {
+		let selectedPath = document.getElementById('filePathInput').value;
+		let targetPath = buildPathBrowser(selectedPath,selectedItem.id);
+		checkForValidPath(targetPath)
+		.then((pathType) => {
+			if (pathType === 'dir'||pathType === 'file') {				
+				if(selectedItem.getAttribute('data-bs-item-ftype')==='dir'){			
+					rmx_fs.promises.rmdir(targetPath).then((value) => {
+						loadFilePath();
+					}).catch((error) => {
+						alert(`error: ${error}`);
+					});					
+				} else {
+					rmx_fs.promises.unlink(targetPath).then((value) => {
+						loadFilePath();
+					}).catch((error) => {
+						console.log(`error: ${error}`);
+					});
+				}
+			} else {
+				
+			}
+		});
+
+	}
+}
+
+
+function setupSystem() {
+	rmxwinbox_backgroundColor = "#ffffff";
+	try {
+		var clockDisplay = document.getElementById('clockDisplay');
+		function clickTicker() {
+			let dateStr = new Date().toString();
+			clockDisplay.textContent = dateStr.slice(16, 21) + " " + dateStr.slice(4, 10);
+		}
+		clickTicker();
+		setInterval(clickTicker, 30000);//approx
+	} catch (e) { console.log(e); }
+	try {
+		const popoverList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+		popoverList.map((popEl) => {
+			let popConfig = {}
+			if (popEl.hasAttribute('data-bs-target-html')) {
+				popConfig.content = document.getElementById(popEl.getAttribute('data-bs-target-html'));
+				popConfig.html = true;
+			}
+			popEl.popOverObject = new bootstrap.Popover(popEl, popConfig);
+		});
+	} catch (e) { console.log(e); }
+	if (window.addEventListener) {
+		document.getElementById('dock').addEventListener('mouseover', addPrevClass, false);
+	}
+	let enterTriggerElements = [['urlInput', loadUrl], ['filePathInput', loadFilePath]]
+	enterTriggerElements.forEach(function (pair) {
+		document.getElementById(pair[0]).addEventListener('keypress', function (event) {
+			if (event.key === 'Enter') {
+				pair[1]();
+			}
+		});
+	});
+	document.getElementById("file_browser_content_browser").addEventListener('contextmenu', function (event) {
+		if(getSelectedItem()){
+			event.preventDefault();
+			let contextmenu = document.getElementById("file-context-menu");
+			contextmenu.style.left = event.pageX + 'px';
+			contextmenu.style.top = event.pageY + 'px';
+			contextmenu.style.display = "block";
+		}
+	});
+
+	document.addEventListener("click", function (event) {
+		document.getElementById("file-context-menu").style.display = 'none';
+	});
+}
+
+function initFileSystem() {
+	try {
+		window.rmx_fs = new LightningFS('rmx_fs_indexed_db');
+	} catch (e) { console.log(e); }
 }

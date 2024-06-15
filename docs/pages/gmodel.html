@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+  <link href="../css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../css/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
+</head>
+
+<body onload="setUpAISystem()">
+  <div class="container py-1">
+    <div class="card">
+      <div class="card-body">
+        <div id="arch_diagram_Output" clas="mb-3" style="height:220px;overflow-y:scroll">
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="input-group input-group-sm">
+          <input type="text" id="archPromptInput" class="form-control form-control-sm  input-sm"
+            placeholder="Enter the prompt to generate a prototype architecture" />
+          <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="archWebGpuTokens()"><i
+              class="bi bi-send"></i></button>
+          <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearArchChat()"><i
+              class="bi bi-eraser"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+
+    function initStarterDiagram() {
+      try {
+        let codeImagePath = "../images/code.svg";
+        Viz.instance().then(function (viz) {
+          document.getElementById("arch_diagram_Output").appendChild(viz
+            .renderSVGElement(`digraph abc{
+                  node [shape="record"];
+                  edge [style="dashed"];				  
+                  a [style="filled", color="black", fillcolor="chartreuse"];
+                  b;
+                  c [shape="none", image="${codeImagePath}", label=""];
+                  d;				  
+                  a -> b;
+                  b -> d;
+                  c -> d [color="red"];
+                  }`, {
+              images: [{ name: codeImagePath, width: 16, height: 16 }],
+            }));
+        });
+      } catch (e) { console.log(e); }
+    }
+
+  </script>
+  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="../js/ai.js"></script>
+  <script src="../js/transformers.min.js"></script>
+  <script src="../js/viz-standalone.min.js" async onload="initStarterDiagram()"></script>
+
+</body>
+
+</html>

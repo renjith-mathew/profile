@@ -1,5 +1,5 @@
 html {
-	font-size: 0.875em
+	font-size: 0.875em;
 }
 
 body {
@@ -14,7 +14,6 @@ body {
 input[type=range][orient=vertical] {
 	writing-mode: vertical-lr;
 	direction: rtl;
-	appearance: slider-vertical;
 	width: 16px;
 	vertical-align: bottom;
 	accent-color: #696969;
@@ -30,19 +29,6 @@ input:user-invalid {
 
 .wb-body {
 	background-color: auto;
-}
-
-.desk_icon_text {
-	font-size: 0.875em;
-}
-
-.file_browser_text {
-	font-size: 0.875em;
-}
-
-
-.desk_icon_logo {
-	visibility: visible;
 }
 
 #dock-container {

@@ -59,12 +59,3 @@ function clearArchChat() {
 	document.getElementById("archPromptInput").value = "";
 	document.getElementById("arch_diagram_Output").innerHTML = "";
 }
-
-function toggleTheme() {
-	let htmlElm = document.documentElement;
-	if (htmlElm.getAttribute("data-bs-theme") === "light") {
-		htmlElm.setAttribute("data-bs-theme", "dark");
-	} else {
-		htmlElm.setAttribute("data-bs-theme", "light");
-	}
-}

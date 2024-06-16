@@ -36,7 +36,6 @@ function openTerminal() {
 			mount: document.getElementById("rmx_terminal"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
 			height: "446px",
 			onclose: function (force) {
 				rmx_terminal_obj.dispose();
@@ -61,7 +60,9 @@ function openAbout() {
 			mount: document.getElementById("profile_content"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
+			oncreate: function (options) {
+				document.getElementById('profile_content_iframe').src='profile.pdf';
+			},
 			onclose: function (force) {
 				delete rmx_profile_obj;
 			}
@@ -89,7 +90,6 @@ function openSettings() {
 	  </table>`,
 		x: "center",
 		y: "center",
-		background: rmxwinbox_backgroundColor,
 		class: ["no-full", "no-max"],
 		onclose: function (force) {
 			delete rmx_settings_obj;
@@ -108,7 +108,9 @@ function openWebBrowser() {
 			mount: document.getElementById("web_browser_content"),
 			x: "10%",
 			y: "10%",
-			background: rmxwinbox_backgroundColor,
+			oncreate: function (options) {
+				document.getElementById('web_browser_content_iframe').src='pages/terms.html';
+			},
 			onclose: function (force) {
 				delete rmx_web_browser_obj;
 			}
@@ -126,7 +128,6 @@ function openFileBrowser() {
 			mount: document.getElementById("file_browser_content"),
 			x: "20%",
 			y: "20%",
-			background: rmxwinbox_backgroundColor,
 			oncreate: function (options) {
 				loadFilePath();
 			},
@@ -142,13 +143,15 @@ function openChat() {
 		return;
 	}
 	rmx_ai_chat_obj = new Object();
-	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model of less than 1M parameters",
+	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model of 0.5M parameters",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("chat_content"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
+			oncreate: function (options) {
+				
+			},
 			onclose: function (force) {
 				delete rmx_ai_chat_obj;
 			},
@@ -167,7 +170,6 @@ function openEditor() {
 			mount: document.getElementById("theia_ide_content"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
 			onclose: function (force) {
 				delete rmx_code_editor_obj;
 			}
@@ -185,7 +187,6 @@ function openTextEditor() {
 			mount: document.getElementById("text_editor_content"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
 			onclose: function (force) {
 				delete rmx_text_editor_obj;
 			}
@@ -203,8 +204,10 @@ function openMathAssistant() {
 			mount: document.getElementById("MathAssistant_content"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
 			class: ["no-full", "no-max"],
+			oncreate: function (options) {
+				
+			},
 			onclose: function (force) {
 				delete rmx_MathAssistant_obj;
 			}
@@ -216,13 +219,15 @@ function openArchitectureDesigner() {
 		return;
 	}
 	rmx_arch_diagram_obj = new Object();
-	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple RAG test model. Do not deploy to prod.",
+	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple test model. Do not deploy to prod.",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("arch_diagram_content"),
 			x: "center",
 			y: "center",
-			background: rmxwinbox_backgroundColor,
+			oncreate: function (options) {
+				document.getElementById('arch_content_iframe').src='pages/gmodel.html';
+			},
 			onclose: function (force) {
 				delete rmx_arch_diagram_obj;
 			}
@@ -408,14 +413,14 @@ function executeTerminalCommand() {
 
 function toggleTheme() {
 	let htmlElm = document.documentElement;
+	var rmxwinbox_backgroundColor = "#aaa";
 	if (htmlElm.getAttribute("data-bs-theme") === "light") {
 		htmlElm.setAttribute("data-bs-theme", "dark");
 		rmxwinbox_backgroundColor = "rgb(33, 37, 41)";
 	} else {
 		htmlElm.setAttribute("data-bs-theme", "light");
-		rmxwinbox_backgroundColor = "#ffffff";
 	}
-	let winBodyElements = document.getElementsByClassName("wb-body");
+	let winBodyElements = document.getElementsByClassName("wb-header");
 	for (let i = 0; i < winBodyElements.length; i++) {
 		winBodyElements[i].style.backgroundColor = rmxwinbox_backgroundColor;
 	}
@@ -633,7 +638,7 @@ function setupSystem() {
 		document.getElementById("file-context-menu").style.display = 'none';
 	});
 
-	initFileSystem();
+	setUpAISystem();
 }
 
 function initFileSystem() {

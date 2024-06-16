@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
 
 <head>
-  <link rel="preload" href="js/winbox.bundle.min.js" as="script" />
   <link href="css/bootstrap.min.css" rel="stylesheet" />
   <link href="css/bootstrap-icons.min.css" rel="stylesheet" />
   <link href="css/xterm.min.css" rel="stylesheet" />
   <link href="css/style.css" rel="stylesheet" />
 </head>
 
-<body onload="setupSystem()">
+<body id="landing" onload="setupSystem()">
   <nav class="navbar navbar-expand-sm shadow">
     <div class="container-fluid">
       <div class="collapse navbar-collapse">
@@ -208,7 +207,7 @@
                   <i class="bi bi-chat-left-text"></i>
                 </button></li>
             </ul>
-            <div class="base"></div>
+            <div class="dockBase"></div>
 
           </div>
 
@@ -227,19 +226,63 @@
     </div>
     <div id="theia_ide_backstore" class="d-none">
       <div id="theia_ide_content">
-        <iframe src="pages/ide.html"></iframe>
+        <iframe id="theia_content_iframe" name="theia_content_iframe"></iframe>
       </div>
     </div>
     <div id="profile_backstore" class="d-none">
       <div id="profile_content">
-        <iframe id="profile_content_iframe" name="profile_content_iframe" src="profile.pdf"></iframe>
+        <iframe id="profile_content_iframe" name="profile_content_iframe"></iframe>
       </div>
     </div>
     <div id="chat_backstore" class="d-none">
       <div id="chat_content">
-        <iframe src="pages/pmodel.html" class="aixiframe"></iframe>
+        <div class="container py-1">
+          <div class="card">
+            <div class="card-body">
+              <div id="chatHistory" clas="mb-3" style="height:220px;overflow-y:scroll">
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="input-group input-group-sm">
+                <input type="text" id="chatInput" class="form-control form-control-sm  input-sm"
+                  placeholder="Enter input message for the local model" />
+                <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="webGpuTokens()"><i
+                    class="bi bi-send"></i></button>
+                <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearChat()"><i
+                    class="bi bi-eraser"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <div id="arch_diagram_backstore" class="d-none">
+      <div id="arch_diagram_content">
+        <iframe id="arch_content_iframe" name="arch_content_iframe" class="aixiframe"></iframe>
+      </div>
+    </div>
+    <div id="MathAssistant_backstore" class="d-none">
+      <div id="MathAssistant_content">
+        <div class="container py-1">
+          <div class="card">
+            <div class="card-body">
+              <div id="MathAssistantOutput" clas="mb-3" style="height:220px;overflow-y:scroll">
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="input-group input-group-sm">
+                <input type="text" id="calcInput" class="form-control form-control-sm  input-sm"
+                  placeholder="Enter a math question. Do not rely on the output." />
+                <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="mathWebGpuTokens()"><i
+                    class="bi bi-send"></i></button>
+                <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearMathChat()"><i
+                    class="bi bi-eraser"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
     <div id="web_browser_backstore" class="d-none">
       <div id="web_browser_content" class="container">
         <table class="table table-sm table-borderless">
@@ -264,7 +307,7 @@
             </td>
           </tr>
           <tr>
-            <td><iframe id="web_browser_content_iframe" name="web_browser_content_iframe" src="pages/terms.html"></iframe>
+            <td><iframe id="web_browser_content_iframe" name="web_browser_content_iframe"></iframe>
             </td>
           </tr>
         </table>
@@ -308,16 +351,6 @@
             </td>
           </tr>
         </table>
-      </div>
-    </div>
-    <div id="arch_diagram_backstore" class="d-none">
-      <div id="arch_diagram_content">
-        <iframe src="pages/gmodel.html" class="aixiframe"></iframe>
-      </div>
-    </div>
-    <div id="MathAssistant_backstore" class="d-none">
-      <div id="MathAssistant_content">
-        <iframe src="pages/cmodel.html" class="aixiframe"></iframe>
       </div>
     </div>
     <div id="text_editor_backstore" class="d-none">
@@ -400,14 +433,16 @@
     </div>
     <div class="d-none">
       <div id="taskbar-clock-content">
-        <iframe src="pages/calendar.html"></iframe>
+        
       </div>
     </div>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/winbox.bundle.min.js"></script>
-    <script src="js/lightning-fs.min.js"></script>
+    <script src="js/ai.js"></script>
     <script src="js/index.js"></script>
+    <script src="js/winbox.bundle.min.js" async></script>
+    <script src="js/lightning-fs.min.js" async onload="initFileSystem()"></script>
     <script src="js/xterm.min.js" async></script>
+    <script src="js/transformers.min.js" async></script>
 </body>
 
 </html>

@@ -2,10 +2,10 @@
 <html lang="en" data-bs-theme="light">
 
 <head>
-  <link href="css/bootstrap.min.css" rel="stylesheet" />
-  <link href="css/bootstrap-icons.min.css" rel="stylesheet" />
-  <link href="css/xterm.min.css" rel="stylesheet" />
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="css/bootstrap.min.css" rel="stylesheet" rel="preload" as="style"/>
+  <link href="css/bootstrap-icons.min.css" rel="stylesheet" rel="preload" as="style"/>
+  <link href="css/xterm.min.css" rel="stylesheet" rel="preload" as="style"/>
 </head>
 
 <body id="landing" onload="setupSystem()">
@@ -20,7 +20,7 @@
               <img src="images/menu.png" alt="Menu" width="16" height="16">
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#" onclick="openAbout()"><i class="bi bi-file-person"></i> About</a>
+              <li><a class="dropdown-item" href="#" onclick="openAbout()"><i class="bi bi-person-vcard"></i> About</a>
               </li>
               <li><a class="dropdown-item" href="#" onclick="openSettings()"><i class="bi bi-gear"></i> Settings</a>
               </li>
@@ -32,9 +32,9 @@
               <li><a class="dropdown-item" href="#" onclick="openChat()"><i class="bi bi-chat-left-text"></i> AI
                   Chat</a></li>
               <li><a class="dropdown-item" href="#" onclick="openArchitectureDesigner()"><i class="bi bi-diagram-2"></i>
-                  Arch Chat
+                  Build Chat
                 </a></li>
-              <li><a class="dropdown-item" href="#" onclick="openMathAssistant()"><i class="bi bi-infinity"></i> Math
+              <li><a class="dropdown-item" href="#" onclick="openMathAssistant()"><i class="bi bi-infinity"></i> Agent
                   Chat</a></li>
               <li>
                 <hr class="dropdown-divider">
@@ -88,7 +88,7 @@
               <i class="bi bi-file-code"></i>
             </button>
             <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" onclick="openMathAssistant()">
-              <i class="bi bi-infinity"></i>
+              <i class="bi bi-robot"></i>
             </button>
             <button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
               onclick="openArchitectureDesigner()">
@@ -239,8 +239,19 @@
         <div class="container py-1">
           <div class="card">
             <div class="card-body">
-              <div id="chatHistory" clas="mb-3" style="height:220px;overflow-y:scroll">
-              </div>
+              <div id="chatHistory" clas="mb-3 border" style="height:220px;overflow-y:scroll;font-size: smaller;">
+                
+                <div class="card">
+                  <div class="card-header">
+                    Sample prompts (Do not rely on the output):
+                  </div>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">What is this website about?</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">List some skills from the profile</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">Which model is used here?</a></li>
+                  </ul>
+                </div>                
+                <div>&nbsp;</div>
             </div>
             <div class="card-footer">
               <div class="input-group input-group-sm">
@@ -258,7 +269,39 @@
     </div>
     <div id="arch_diagram_backstore" class="d-none">
       <div id="arch_diagram_content">
-        <iframe id="arch_content_iframe" name="arch_content_iframe" class="aixiframe"></iframe>
+        <div class="container py-1">
+          <div class="card">
+            <div class="card-body">
+              <div id="arch_diagram_Output" clas="mb-3" style="height:220px;overflow-y:scroll;font-size: smaller;">
+
+                <div class="card">
+                  <div class="card-header" id="arch_prompt_q">
+                    Sample prompts (Do not rely on the output):
+                  </div>
+                  <div id="arch_prompt_graphviz">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Visualize this neural network model architecture</a></li>
+                      <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Generate a typical multi-cloud application with compute and storage</a></li>
+                      <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Create a deployment diagram for an on-prem web application</a></li>
+                    </ul>
+                  </div>
+                </div> 
+                <div>&nbsp;</div>
+
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="input-group input-group-sm">
+                <input type="text" id="archPromptInput" class="form-control form-control-sm  input-sm"
+                  placeholder="Enter the prompt to generate a prototype architecture" />
+                <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="archWebGpuTokens()"><i
+                    class="bi bi-send"></i></button>
+                <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearArchChat()"><i
+                    class="bi bi-eraser"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="MathAssistant_backstore" class="d-none">
@@ -266,13 +309,26 @@
         <div class="container py-1">
           <div class="card">
             <div class="card-body">
-              <div id="MathAssistantOutput" clas="mb-3" style="height:220px;overflow-y:scroll">
+              <div id="MathAssistantOutput" clas="mb-3" style="height:220px;overflow-y:scroll;font-size: smaller;">
+
+                <div class="card">
+                  <div class="card-header">
+                    Sample prompts (Do not rely on the output):
+                  </div>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Create a new file and save using the terminal</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Generate and save random HTML and display</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Visualize this neural network model</a></li>
+                  </ul>
+                </div> 
+                <div>&nbsp;</div>
+
               </div>
             </div>
             <div class="card-footer">
               <div class="input-group input-group-sm">
                 <input type="text" id="calcInput" class="form-control form-control-sm  input-sm"
-                  placeholder="Enter a math question. Do not rely on the output." />
+                  placeholder="Enter a task for the agents. Do not rely on the output." />
                 <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="mathWebGpuTokens()"><i
                     class="bi bi-send"></i></button>
                 <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearMathChat()"><i
@@ -433,16 +489,20 @@
     </div>
     <div class="d-none">
       <div id="taskbar-clock-content">
-        
+        <i class="bi bi-clock"></i>
+        <div class="spinner-grow spinner-grow-sm" role="status">
+          <span class="visually-hidden"></span>
+        </div>      
       </div>
     </div>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/ai.js"></script>
-    <script src="js/index.js"></script>
-    <script src="js/winbox.bundle.min.js" async></script>
-    <script src="js/lightning-fs.min.js" async onload="initFileSystem()"></script>
-    <script src="js/xterm.min.js" async></script>
-    <script src="js/transformers.min.js" async></script>
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+    <script src="js/ai.js" defer></script>
+    <script src="js/index.js" defer></script>
+    <script src="js/winbox.bundle.min.js" defer></script>
+    <script src="js/lightning-fs.min.js" defer onload="initFileSystem()"></script>
+    <script src="js/xterm.min.js" defer></script>
+    <script src="js/transformers.min.js" defer></script>
+    <script src="js/viz-standalone.min.js" defer></script>
 </body>
 
 </html>

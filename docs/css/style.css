@@ -24,8 +24,20 @@ input:user-invalid {
 	border: 2px solid red;
 }
 
-.wb-header {
+html[data-bs-theme=dark] .wb-header {
+	background-color: #333;
+}
+
+html[data-bs-theme=light] .wb-header {
 	background-color: #aaa;
+}
+
+html[data-bs-theme=dark] .wb-body {
+	background-color: #212529;
+}
+
+html[data-bs-theme=light] .wb-body {
+	background-color: #fff;
 }
 
 .aixiframe {

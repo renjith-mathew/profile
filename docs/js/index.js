@@ -85,7 +85,7 @@ function openSettings() {
 		  <td>View Profile</td>
 		  <td><a class="dropdown-item" href="profile.pdf" target="_blank"><i class="bi bi-window-plus"></i></a></td>
 		</tr>
-		<tr><td>Language Model Settings</td><td>Temperature: 0.7</td></tr>	
+		<tr><td>Language Model Settings</td><td>temperature: default, top_k: default, top_p: default</td></tr>	
 		<tr><td>About</td><td>This is a UI prototype | Not for real use</td></tr>	
 	  </table>`,
 		x: "center",
@@ -143,7 +143,7 @@ function openChat() {
 		return;
 	}
 	rmx_ai_chat_obj = new Object();
-	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model of 0.5M parameters",
+	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model of ~0.5M parameters",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("chat_content"),
@@ -198,7 +198,7 @@ function openMathAssistant() {
 		return;
 	}
 	rmx_MathAssistant_obj = new Object();
-	rmx_MathAssistant_obj.winbox_win_obj = new WinBox("Math Model - This is a simple RAG test model. Do not rely on the output.",
+	rmx_MathAssistant_obj.winbox_win_obj = new WinBox("Agent Model - This is a simple agentic workflow test model. Do not rely on the output.",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("MathAssistant_content"),
@@ -219,15 +219,12 @@ function openArchitectureDesigner() {
 		return;
 	}
 	rmx_arch_diagram_obj = new Object();
-	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple test model. Do not deploy to prod.",
+	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple RAG test model. Do not deploy to prod.",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("arch_diagram_content"),
 			x: "center",
 			y: "center",
-			oncreate: function (options) {
-				document.getElementById('arch_content_iframe').src='pages/gmodel.html';
-			},
 			onclose: function (force) {
 				delete rmx_arch_diagram_obj;
 			}
@@ -410,32 +407,12 @@ function executeTerminalCommand() {
 
 }
 
-
 function toggleTheme() {
 	let htmlElm = document.documentElement;
-	var rmxwinbox_backgroundColor = "#aaa";
 	if (htmlElm.getAttribute("data-bs-theme") === "light") {
 		htmlElm.setAttribute("data-bs-theme", "dark");
-		rmxwinbox_backgroundColor = "rgb(33, 37, 41)";
 	} else {
 		htmlElm.setAttribute("data-bs-theme", "light");
-	}
-	let winBodyElements = document.getElementsByClassName("wb-header");
-	for (let i = 0; i < winBodyElements.length; i++) {
-		winBodyElements[i].style.backgroundColor = rmxwinbox_backgroundColor;
-	}
-	toggleInnerFrameTheme();
-}
-
-function toggleInnerFrameTheme() {
-	let chatFrameElements = document.getElementsByClassName("aixiframe");
-	for (let i = 0; i < chatFrameElements.length; i++) {
-		var iframeEle = chatFrameElements[i].contentDocument.documentElement;
-		if (iframeEle.getAttribute("data-bs-theme") === "light") {
-			iframeEle.setAttribute("data-bs-theme", "dark");
-		} else {
-			iframeEle.setAttribute("data-bs-theme", "light");
-		}
 	}
 }
 
@@ -587,8 +564,6 @@ function ctxDeleteFile() {
 
 	}
 }
-
-rmxwinbox_backgroundColor = "#ffffff";
 
 function setupSystem() {	
 	try {

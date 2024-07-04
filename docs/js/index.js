@@ -61,7 +61,7 @@ function openAbout() {
 			x: "center",
 			y: "center",
 			oncreate: function (options) {
-				document.getElementById('profile_content_iframe').src='profile.pdf';
+				document.getElementById('profile_content_iframe').src = 'profile.pdf';
 			},
 			onclose: function (force) {
 				delete rmx_profile_obj;
@@ -109,7 +109,7 @@ function openWebBrowser() {
 			x: "10%",
 			y: "10%",
 			oncreate: function (options) {
-				document.getElementById('web_browser_content_iframe').src='pages/terms.html';
+				document.getElementById('web_browser_content_iframe').src = 'pages/terms.html';
 			},
 			onclose: function (force) {
 				delete rmx_web_browser_obj;
@@ -150,7 +150,7 @@ function openChat() {
 			x: "center",
 			y: "center",
 			oncreate: function (options) {
-				
+				initProfileChatTransformersPipeline();
 			},
 			onclose: function (force) {
 				delete rmx_ai_chat_obj;
@@ -206,7 +206,7 @@ function openMathAssistant() {
 			y: "center",
 			class: ["no-full", "no-max"],
 			oncreate: function (options) {
-				
+
 			},
 			onclose: function (force) {
 				delete rmx_MathAssistant_obj;
@@ -268,46 +268,84 @@ function buildPathTerminal(new_path) {
 	return buildPathBrowser(rmx_terminal_obj.current_dir, new_path);
 }
 
-async function checkForValidPath(new_path) {
-	try {
-		new_path = buildPathBrowser('', new_path);
-		const statResult = await rmx_fs.promises.stat(new_path);
-		return statResult['type'];
-	} catch (e) {
-		return '';
-	}
+function rmx_fs_exec_stat(check_path) {
+	return localStorage.getItem('rmx_fs/item_type' + check_path);
 }
 
-async function checkForValidTermPath(new_path) {
-	try {
-		new_path = buildPathTerminal(new_path);
-		const statResult = await rmx_fs.promises.stat(new_path);
-		return statResult['type'];
-	} catch (e) {
-		return '';
+function rmx_fs_exec_readdir(check_path) {
+	let keyStart = 'rmx_fs/item_type' + (check_path.endsWith('/')?check_path:check_path+'/');
+	let keysAll = Object.keys(localStorage);
+	let result = []
+	for(let k=0;k<keysAll.length;k++){
+		let key = keysAll[k];
+		let suffix = key.replace(keyStart, '');
+		if(key.startsWith(keyStart) && suffix.length > 0 && suffix.indexOf('/') == -1){
+			result.push(suffix);
+		}
 	}
+	return result;
+}
+
+function rmx_fs_exec_mkdir(check_path) {
+	localStorage.setItem('rmx_fs/item_type' + check_path, 'dir');
+}
+
+function rmx_fs_exec_rmdir(check_path){
+	if(check_path=='/'){
+		return;
+	}
+	let keyStart = 'rmx_fs/item_type' + check_path;
+	let fileKeyStart = 'rmx_fs/item_content' + check_path;
+	let keysAll = Object.keys(localStorage);
+	for(let k=0;k<keysAll.length;k++){
+		let key = keysAll[k];
+		if(key===keyStart || key.startsWith(keyStart+'/')
+			|| key.startsWith(fileKeyStart+'/')){
+			localStorage.removeItem(key);
+		}
+	}
+	
+}
+
+function rmx_fs_exec_writeFile(check_path,file_content){
+	localStorage.setItem('rmx_fs/item_type' + check_path, 'file');
+	localStorage.setItem('rmx_fs/item_content' + check_path, file_content);
+}
+
+function rmx_fs_exec_readFile(check_path) {
+	return localStorage.getItem('rmx_fs/item_content' + check_path);
+}
+function rmx_fs_exec_unlink(check_path) {
+	localStorage.removeItem('rmx_fs/item_type' + check_path);
+	localStorage.removeItem('rmx_fs/item_content' + check_path);
+}
+
+function checkForValidPath(new_path) {
+	new_path = buildPathBrowser('', new_path);
+	return rmx_fs_exec_stat(new_path);
+}
+
+function checkForValidTermPath(new_path) {
+	new_path = buildPathTerminal(new_path);
+	return rmx_fs_exec_stat(new_path);
 }
 
 function checkForValidTermDirectoryPath(new_path, fexeccb) {
-	checkForValidTermPath(new_path)
-		.then((pathType) => {
-			if (pathType === 'dir') {
-				fexeccb();
-			} else {
-				writeTerminalLine(new_path + ' No such directory');
-			}
-		});
+	let pathType = checkForValidTermPath(new_path);
+	if (pathType === 'dir') {
+		fexeccb();
+	} else {
+		writeTerminalLine(new_path + ' No such directory');
+	}
 }
 
 function checkForValidTermFilePath(new_path, fexeccb) {
-	checkForValidTermPath(new_path)
-		.then((pathType) => {
-			if (pathType === 'file') {
-				fexeccb();
-			} else {
-				writeTerminalLine(new_path + ' No such file');
-			}
-		});
+	let pathType = checkForValidTermPath(new_path);
+	if (pathType === 'file') {
+		fexeccb();
+	} else {
+		writeTerminalLine(new_path + ' No such file');
+	}
 }
 
 function executeTerminalCommand() {
@@ -334,44 +372,31 @@ function executeTerminalCommand() {
 		case 'rename':
 			const mvPath1 = buildPathTerminal(args[1]);
 			const mvPath2 = buildPathTerminal(args[2]);
-			rmx_fs.promises.rename(mvPath1, mvPath2).then((value) => {
-				writeNewTerminalLine();
-			}).catch((error) => {
-				writeTerminalLine(`error: ${error}`);
-			});
+			rmx_fs_exec_rename(mvPath1, mvPath2);
+			writeNewTerminalLine();
 			break;
 		case 'mkdir':
 			const newTargetDirectory = buildPathTerminal(args[1]);
-			rmx_fs.promises.mkdir(newTargetDirectory).then((value) => {
-				writeNewTerminalLine();
-			}).catch((error) => {
-				writeTerminalLine(`error: ${error}`);
-			});
+			rmx_fs_exec_mkdir(newTargetDirectory);
+			writeNewTerminalLine();
 			break;
 		case 'rmdir':
 			const rmTargetDirectory = buildPathTerminal(args[1]);
 			checkForValidTermDirectoryPath(rmTargetDirectory, () => {
-				rmx_fs.promises.rmdir(rmTargetDirectory).then((value) => {
-					writeNewTerminalLine();
-				}).catch((error) => {
-					writeTerminalLine(`error: ${error}`);
-				});
+				rmx_fs_exec_rmdir(rmTargetDirectory);
+				writeNewTerminalLine();
 			});
 			break;
 		case 'touch':
 			const fileNameTouch = buildPathTerminal(args[1]);
-			rmx_fs.promises.writeFile(fileNameTouch, new Date().toISOString()).then((value) => {
-				writeNewTerminalLine();
-			}).catch((error) => {
-				writeTerminalLine(`error: ${error}`);
-			});
+			rmx_fs_exec_writeFile(fileNameTouch, new Date().toISOString());
+			writeNewTerminalLine();
 			break;
 		case 'rm':
 			const fileNameDel = buildPathTerminal(args[1]);
 			checkForValidTermFilePath(fileNameDel, () => {
-				rmx_fs.promises.unlink(fileNameDel).then((value) => {
-					writeNewTerminalLine();
-				})
+				rmx_fs_exec_unlink(fileNameDel);
+				writeNewTerminalLine();
 			});
 			break;
 		case 'ls':
@@ -380,23 +405,28 @@ function executeTerminalCommand() {
 				targetDirectory = args[1];
 			}
 			checkForValidTermDirectoryPath(targetDirectory, () => {
-				rmx_fs.promises.readdir(targetDirectory, '').then((value) => {
-					writeTerminalLine(value.join('\r\n '));
-				})
+				let lsListItems = rmx_fs_exec_readdir(targetDirectory, '');
+				if(lsListItems.length>0){
+					writeTerminalLine(lsListItems.join('\r\n '));
+				} else {
+					writeNewTerminalLine();
+				}
 			});
 			break;
 		case 'cat':
 			const fileNameCat = buildPathTerminal(args[1]);
 			checkForValidTermFilePath(fileNameCat, () => {
-				rmx_fs.promises.readFile(fileNameCat, 'utf8').then((value) => {
-					writeTerminalLine(value);
-				})
+				let fileContents = rmx_fs_exec_readFile(fileNameCat);
+				writeTerminalLine(fileContents);
 			});
 			break;
 		case 'clear':
 			for (var i = 0; i < 7; i++) { rmx_terminal_obj.write('\b \b'); }
 			rmx_terminal_obj.clear();
 			writeNewTerminalLine();
+			break;
+		case 'date':
+			writeTerminalLine(new Date().toString());
 			break;
 		case 'exit':
 			rmx_terminal_obj.winbox_win_obj.close();
@@ -446,26 +476,21 @@ function loadParentFilePath() {
 function loadFilePath() {
 	let selectedPath = document.getElementById('filePathInput').value;
 	document.getElementById("file_browser_content_browser").innerHTML = '';
-	checkForValidPath(selectedPath)
-		.then((pathType) => {
-			if (pathType === 'dir') {
-				rmx_fs.promises.readdir(selectedPath, '').then((value) => {
-					for (let i = 0; i < value.length; i++) {
-						let itemPath = buildPathBrowser(selectedPath, value[i]);
-						checkForValidPath(itemPath)
-							.then((pathType) => {
-								if (pathType === 'file') {
-									document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML + getFileHtml(value[i]);
-								} else if (pathType === 'dir') {
-									document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML + getFolderHtml(value[i]);
-								}
-							});
-					}
-				})
-			} else {
-				document.getElementById("file_browser_content_browser").innerHTML = '<div class="alert alert-danger" role="alert">Invalid path</div>';
+	let pathType = checkForValidPath(selectedPath);
+	if (pathType === 'dir') {
+		let lsListItems = rmx_fs_exec_readdir(selectedPath, '');
+		for (let i = 0; i < lsListItems.length; i++) {
+			let itemPath = buildPathBrowser(selectedPath, lsListItems[i]);
+			let pathType = checkForValidPath(itemPath);
+			if (pathType === 'file') {
+				document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML + getFileHtml(lsListItems[i]);
+			} else if (pathType === 'dir') {
+				document.getElementById("file_browser_content_browser").innerHTML = document.getElementById("file_browser_content_browser").innerHTML + getFolderHtml(lsListItems[i]);
 			}
-		});
+		}
+	} else {
+		document.getElementById("file_browser_content_browser").innerHTML = '<div class="alert alert-danger" role="alert">Invalid path</div>';
+	}
 }
 
 function saveNewFileBrowser(isFile) {
@@ -473,19 +498,13 @@ function saveNewFileBrowser(isFile) {
 	if (isFile) {
 		let targetPath = document.getElementById('file_browser_newfile-content_val').value;
 		let newTargetFile = buildPathBrowser(selectedPath, targetPath);
-		rmx_fs.promises.writeFile(newTargetFile, new Date().toISOString()).then((value) => {
-			loadFilePath();
-		}).catch((error) => {
-			console.log(error);
-		});
+		rmx_fs_exec_writeFile(newTargetFile, new Date().toISOString());
+		loadFilePath();
 	} else {
 		let targetPath = document.getElementById('file_browser_newfolder-content_val').value;
 		let newTargetDirectory = buildPathBrowser(selectedPath, targetPath);
-		rmx_fs.promises.mkdir(newTargetDirectory).then((value) => {
-			loadFilePath();
-		}).catch((error) => {
-			console.log(error);
-		});
+		rmx_fs_exec_mkdir(newTargetDirectory);
+		loadFilePath();
 	}
 	closeNewFileBrowser();
 }
@@ -541,31 +560,21 @@ function ctxDeleteFile() {
 	if (selectedItem) {
 		let selectedPath = document.getElementById('filePathInput').value;
 		let targetPath = buildPathBrowser(selectedPath, selectedItem.id);
-		checkForValidPath(targetPath)
-			.then((pathType) => {
-				if (pathType === 'dir' || pathType === 'file') {
-					if (selectedItem.getAttribute('data-bs-item-ftype') === 'dir') {
-						rmx_fs.promises.rmdir(targetPath).then((value) => {
-							loadFilePath();
-						}).catch((error) => {
-							alert(`error: ${error}`);
-						});
-					} else {
-						rmx_fs.promises.unlink(targetPath).then((value) => {
-							loadFilePath();
-						}).catch((error) => {
-							console.log(`error: ${error}`);
-						});
-					}
-				} else {
-
-				}
-			});
+		let pathType = checkForValidPath(targetPath);
+		if (pathType === 'dir' || pathType === 'file') {
+			if (selectedItem.getAttribute('data-bs-item-ftype') === 'dir') {
+				rmx_fs_exec_rmdir(targetPath);
+				loadFilePath();
+			} else {
+				rmx_fs_exec_unlink(targetPath);
+				loadFilePath();
+			}
+		}
 
 	}
 }
 
-function setupSystem() {	
+function setupSystem() {
 	try {
 		var clockDisplay = document.getElementById('clockDisplay');
 		function clickTicker() {
@@ -612,12 +621,6 @@ function setupSystem() {
 	document.addEventListener("click", function (event) {
 		document.getElementById("file-context-menu").style.display = 'none';
 	});
-
+	localStorage.setItem('rmx_fs/item_type/', 'dir');
 	setUpAISystem();
-}
-
-function initFileSystem() {
-	try {
-		rmx_fs = new LightningFS('rmx_fs_indexed_db');
-	} catch (e) { console.log(e); }
 }

@@ -143,7 +143,7 @@ function openChat() {
 		return;
 	}
 	rmx_ai_chat_obj = new Object();
-	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple test model of ~0.5M parameters",
+	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple tiny test model of ~0.3M parameters",
 		{
 			root: document.getElementById('rmx_workspace'),
 			mount: document.getElementById("chat_content"),

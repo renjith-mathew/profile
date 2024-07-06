@@ -11,17 +11,8 @@ body#landing {
 	margin: 0;
 }
 
-input[type=range][orient=vertical] {
-	writing-mode: vertical-lr;
-	direction: rtl;
-	width: 16px;
-	vertical-align: bottom;
-	accent-color: #696969;
-	appearance: slider-vertical;
-}
-
 input:user-invalid {
-	border: 2px solid red;
+	border: 2px solid #ffbbaa;
 }
 
 html[data-bs-theme=dark] .wb-header {

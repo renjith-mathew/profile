@@ -104,9 +104,17 @@
         <form class="d-flex">
           <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" onclick='toggleTheme()'><i
               class='bi bi-toggles2' data-bs-toggle="tooltip" data-bs-title="Toggle light or dark theme"></i></button>
-          <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" data-bs-toggle="popover"
-            data-bs-placement="bottom" data-bs-target-html="taskbar-volume-content" data-bs-trigger="click"><i
-              class="bi bi-volume-up"></i></button>&nbsp;
+          <div class="dropdown">
+            <button type="button" class="btn btn-outline-secondary btm-sm  border-0" data-bs-toggle="dropdown"
+              data-bs-auto-close="outside">
+              <i class="bi bi-volume-up"></i>
+            </button>
+            <div class="dropdown-menu p-1">
+              <div class="m-0">
+                <input class="form-range"  type="range" min="1" max="10" value="5" />
+              </div>
+            </div>
+          </div>
           <button type="button" class="btn btn-outline-secondary  btn-sm  border-0" data-bs-toggle="popover"
             data-bs-placement="bottom" data-bs-target-html="taskbar-perf-content" data-bs-trigger="focus"><i
               class="bi bi-thermometer-half"></i></button>&nbsp;
@@ -242,22 +250,23 @@
       <div id="chat_content">
         <div class="container py-1">
           <div class="card">
-            <div class="card-header">
-              <div class="ai-progress-bar">
-                <div id="chat_content_progress_bar"></div>
-              </div>
-            </div>
             <div class="card-body">
               <div id="chatHistory" clas="mb-3 border" style="height:220px;overflow-y:scroll;font-size: smaller;">
-
+                <button id="pchatonnxwaitalert" class="btn btn-secondary mb-2" type="button" disabled>
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span class="sr-only">Waiting for ONNX runtime ...</span>
+                </button>                
                 <div class="card">
                   <div class="card-header">
-                    Sample prompts (Do not rely on the output):
+                    <div>Sample prompts (Do not rely on the output):</div>
                   </div>
                   <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">What website is this?</a></li>
-                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">List skills from the profile</a></li>
-                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">Which NLP model?</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">What
+                        website is this?</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">List
+                        skills from the profile</a></li>
+                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">Which NLP
+                        model?</a></li>
                   </ul>
                 </div>
                 <div>&nbsp;</div>
@@ -265,14 +274,35 @@
               <div class="card-footer">
                 <div class="input-group input-group-sm">
                   <input type="text" id="chatInput" class="form-control form-control-sm  input-sm"
-                    placeholder="Enter input message for the local model" />
+                    placeholder="Enter input message for the local model" disabled/>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="webGpuTokens()"><i
                       class="bi bi-send"></i></button>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearChat()"><i
                       class="bi bi-eraser"></i></button>
-                </div>
+                  <div class="dropup">
+                    <button type="button" class="btn btn-outline-secondary btm-sm  border-0" data-bs-toggle="dropdown"
+                      data-bs-auto-close="outside">
+                      <i class="bi bi-sliders"></i>
+                    </button>
+                    <div class="dropdown-menu p-1">
+                      <div class="m-0">
+                        <label for="llmtempsetting" class="form-label">Temperature</label>
+                        <input class="form-range" type="range" min="0.1" max="2" step="0.1" value="1"
+                          name="llmtempsetting" id="llmtempsetting" />
+                      </div>
+                      <div class="m-0">
+                        <label for="llmreppensetting" class="form-label">Repetition Penalty</label>
+                        <input class="form-range" type="range" min="1" max="2" step="0.1" value="1"
+                          name="llmreppensetting" id="llmreppensetting" />
+                      </div>
+                    </div>
+                  </div>
+                </div>                
               </div>
             </div>
+          </div>
+          <div class="ai-progress-bar">
+            <div id="chat_content_progress_bar"></div>
           </div>
         </div>
       </div>
@@ -282,7 +312,10 @@
             <div class="card">
               <div class="card-body">
                 <div id="arch_diagram_Output" clas="mb-3" style="height:220px;overflow-y:scroll;font-size: smaller;">
-
+                  <button id="achatonnxwaitalert" class="btn btn-secondary mb-2" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Waiting for ONNX runtime ...</span>
+                  </button>
                   <div class="card">
                     <div class="card-header" id="arch_prompt_q">
                       Sample prompts (Do not rely on the output):
@@ -305,7 +338,7 @@
               <div class="card-footer">
                 <div class="input-group input-group-sm">
                   <input type="text" id="archPromptInput" class="form-control form-control-sm  input-sm"
-                    placeholder="Enter the prompt to generate a prototype architecture" />
+                    placeholder="Enter the prompt to generate a prototype architecture" disabled/>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0"
                     onclick="archWebGpuTokens()"><i class="bi bi-send"></i></button>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearArchChat()"><i
@@ -322,7 +355,10 @@
             <div class="card">
               <div class="card-body">
                 <div id="MathAssistantOutput" clas="mb-3" style="height:220px;overflow-y:scroll;font-size: smaller;">
-
+                  <button id="mchatonnxwaitalert" class="btn btn-secondary mb-2" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">Waiting for ONNX runtime ...</span>
+                  </button>
                   <div class="card">
                     <div class="card-header">
                       Sample prompts (Do not rely on the output):
@@ -343,7 +379,7 @@
               <div class="card-footer">
                 <div class="input-group input-group-sm">
                   <input type="text" id="calcInput" class="form-control form-control-sm  input-sm"
-                    placeholder="Enter a task for the agents. Do not rely on the output." />
+                    placeholder="Enter a task for the agents. Do not rely on the output." disabled/>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0"
                     onclick="mathWebGpuTokens()"><i class="bi bi-send"></i></button>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearMathChat()"><i
@@ -454,9 +490,6 @@
         </div>
       </div>
       <!-- window contents end -->
-      <div class="d-none">
-        <div id="taskbar-volume-content"><input type="range" orient="vertical" min="1" max="10" value="5" /></div>
-      </div>
       <div class="d-none">
         <div id="file_browser_newfile-content">
           <div class="input-group input-group-sm">

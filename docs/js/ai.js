@@ -18,6 +18,12 @@ async function initProfileChatTransformersPipeline() {
 	}
 	//ort-wasm.wasm, ort-wasm-simd.wasm, ort-wasm-simd-threaded.wasm, ort-wasm-threaded.wasm
 	ort_inference_session = await ort.InferenceSession.create('models/pmodel.onnx');
+	document.getElementById('chatInput').removeAttribute('disabled');
+	document.getElementById('archPromptInput').removeAttribute('disabled');
+	document.getElementById('calcInput').removeAttribute('disabled');
+	document.getElementById("pchatonnxwaitalert").remove();
+	document.getElementById("achatonnxwaitalert").remove();
+	document.getElementById("mchatonnxwaitalert").remove();
 }
 
 
@@ -88,16 +94,60 @@ function approxBPE(inputText) {
 }
 
 
-function temp_argmax(data) {
+function temp_argmax(logits) {
 	let maxIndex = 0;
-	let maxValue = data[0];
-	for (let i = 1; i < data.length; i++) {
-		if (data[i] > maxValue) {
-			maxValue = data[i];
+	let maxValue = logits[0];
+	for (let i = 1; i < logits.length; i++) {
+		if (logits[i] > maxValue) {
+			maxValue = logits[i];
 			maxIndex = i;
 		}
 	}
 	return maxIndex;
+}
+
+function temp_sample_TemperatureAndRepetitionPenalty(logits, temperature, repetitionPenalty, previousTokens) {
+	if(temperature<0.1){
+		temperature = 0.1;
+	}
+	if(repetitionPenalty<1){
+		repetitionPenalty = 1.0;
+	}
+	//apply temp
+	const probabilities = logits.map(logit => Math.exp(logit / temperature) /
+		logits.reduce((sum, value) => sum + Math.exp(value / temperature), 0));
+	//apply rep penalty
+	if (repetitionPenalty > 1.0 && previousTokens.length > 0) {
+		for (let i = 0; i < probabilities.length; i++) {
+			if (previousTokens.includes(i)) {
+				probabilities[i] = probabilities[i] ** (1 / repetitionPenalty);
+			}
+		}
+	}
+	const total = probabilities.reduce((sum, value) => sum + value, 0);
+	const randomValue = Math.random() * total;
+	let accumulated = 0;
+	for (let i = 0; i < probabilities.length; i++) {
+		accumulated += probabilities[i];
+		if (accumulated >= randomValue) {
+			return i;
+		}
+	}
+	return temp_argmax(logits);
+}
+
+function sampleOutputToken(results, previousTokens) {
+	let logits = results['output'].data;
+	try {
+		let temperature = document.getElementById('llmtempsetting').value;
+		let repetitionPenalty = document.getElementById('llmreppensetting').value;
+		if (temperature > 1 || repetitionPenalty > 1) {
+			return temp_sample_TemperatureAndRepetitionPenalty(logits, temperature, repetitionPenalty, previousTokens);
+		}
+	} catch (e) {
+		console.log(e);
+	}
+	return temp_argmax(logits);
 }
 
 function startProfileChat(elm) {
@@ -155,7 +205,7 @@ async function webGpuTokens() {
 				let bigIntArray = input_ids.map(input_id => BigInt(input_id));
 				const feeds = { 'tokens': new ort.Tensor('int64', BigInt64Array.from(bigIntArray), [1, bigIntArray.length]) };
 				const results = await ort_inference_session.run(feeds);
-				let output_token_id = temp_argmax(results['output'].data);				
+				let output_token_id = sampleOutputToken(results,input_ids);				
 				input_ids.push(output_token_id);
 				if(count>0){
 					if (output_token_id == 1 /* bos token id*/ || output_token_id == 2 /* eos token id*/) {

@@ -7,8 +7,9 @@ function checkIfExists(varName) {
 }
 
 function openTerminal() {
-	if (checkIfExists("rmx_terminal_obj")) {
-		return;
+	const winboxWindowId = "rmx_terminal_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_terminal_obj = new Terminal({
 		cursorBlink: true
@@ -47,11 +48,13 @@ function openTerminal() {
 			class: ["no-full", "no-max"],
 			icon: "images/terminal.svg"
 		});
+	return winboxWindowId;
 }
 
 function openAbout() {
-	if (checkIfExists("rmx_profile_obj")) {
-		return;
+	const winboxWindowId = "rmx_profile_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_profile_obj = new Object();
 	rmx_profile_obj.winbox_win_obj = new WinBox("About",
@@ -67,11 +70,13 @@ function openAbout() {
 				delete rmx_profile_obj;
 			}
 		});
+	return winboxWindowId;
 }
 
 function openSettings() {
-	if (checkIfExists("rmx_settings_obj")) {
-		return;
+	const winboxWindowId = "rmx_settings_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_settings_obj = new Object();
 	rmx_settings_obj.winbox_win_obj = new WinBox({
@@ -95,11 +100,13 @@ function openSettings() {
 			delete rmx_settings_obj;
 		}
 	});
+	return winboxWindowId;
 }
 
 function openWebBrowser() {
-	if (checkIfExists("rmx_web_browser_obj")) {
-		return;
+	const winboxWindowId = "rmx_web_browser_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_web_browser_obj = new Object();
 	rmx_web_browser_obj.winbox_win_obj = new WinBox("Web Browser - Not for real use",
@@ -115,11 +122,13 @@ function openWebBrowser() {
 				delete rmx_web_browser_obj;
 			}
 		});
+	return winboxWindowId;
 }
 
 function openFileBrowser() {
-	if (checkIfExists("rmx_file_browser_obj")) {
-		return;
+	const winboxWindowId = "rmx_file_browser_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_file_browser_obj = new Object();
 	rmx_file_browser_obj.winbox_win_obj = new WinBox("File Browser - Local IndexedDB",
@@ -136,11 +145,13 @@ function openFileBrowser() {
 				closeNewFileBrowser();
 			}
 		});
+	return winboxWindowId;
 }
 
 function openChat() {
-	if (checkIfExists("rmx_ai_chat_obj")) {
-		return;
+	const winboxWindowId = "rmx_ai_chat_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_ai_chat_obj = new Object();
 	rmx_ai_chat_obj.winbox_win_obj = new WinBox("AI Chat - This is a simple tiny test model of ~0.3M parameters",
@@ -157,11 +168,13 @@ function openChat() {
 			},
 			icon: "images/chat.svg"
 		});
+	return winboxWindowId;
 }
 
 function openEditor() {
-	if (checkIfExists("rmx_code_editor_obj")) {
-		return;
+	const winboxWindowId = "rmx_code_editor_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_code_editor_obj = new Object();
 	rmx_code_editor_obj.winbox_win_obj = new WinBox("Code Editor",
@@ -174,11 +187,13 @@ function openEditor() {
 				delete rmx_code_editor_obj;
 			}
 		});
+	return winboxWindowId;
 }
 
 function openTextEditor() {
-	if (checkIfExists("rmx_text_editor_obj")) {
-		return;
+	const winboxWindowId = "rmx_text_editor_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_text_editor_obj = new Object();
 	rmx_text_editor_obj.winbox_win_obj = new WinBox("Text Editor",
@@ -191,11 +206,13 @@ function openTextEditor() {
 				delete rmx_text_editor_obj;
 			}
 		});
+	return winboxWindowId;
 }
 
 function openMathAssistant() {
-	if (checkIfExists("rmx_MathAssistant_obj")) {
-		return;
+	const winboxWindowId = "rmx_MathAssistant_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_MathAssistant_obj = new Object();
 	rmx_MathAssistant_obj.winbox_win_obj = new WinBox("Agent Model - This is a simple agentic workflow test model. Do not rely on the output.",
@@ -206,17 +223,19 @@ function openMathAssistant() {
 			y: "center",
 			class: ["no-full", "no-max"],
 			oncreate: function (options) {
-
+				initAgentChatTransformersPipeline();
 			},
 			onclose: function (force) {
 				delete rmx_MathAssistant_obj;
 			}
 		});
+	return winboxWindowId;
 }
 
 function openArchitectureDesigner() {
-	if (checkIfExists("rmx_arch_diagram_obj")) {
-		return;
+	const winboxWindowId = "rmx_arch_diagram_obj";
+	if (checkIfExists(winboxWindowId)) {
+		return winboxWindowId;
 	}
 	rmx_arch_diagram_obj = new Object();
 	rmx_arch_diagram_obj.winbox_win_obj = new WinBox("Architecture Generator - This is a simple RAG test model. Do not deploy to prod.",
@@ -225,10 +244,14 @@ function openArchitectureDesigner() {
 			mount: document.getElementById("arch_diagram_content"),
 			x: "center",
 			y: "center",
+			oncreate: function (options) {
+				initAgentChatTransformersPipeline();
+			},
 			onclose: function (force) {
 				delete rmx_arch_diagram_obj;
 			}
 		});
+	return winboxWindowId;
 }
 
 function writeNewTerminalLine() {

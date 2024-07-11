@@ -255,21 +255,7 @@
                 <button id="pchatonnxwaitalert" class="btn btn-secondary mb-2" type="button" disabled>
                   <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span class="sr-only">Waiting for ONNX runtime ...</span>
-                </button>                
-                <div class="card">
-                  <div class="card-header">
-                    <div>Sample prompts (Do not rely on the output):</div>
-                  </div>
-                  <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">What
-                        website is this?</a></li>
-                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">List
-                        skills from the profile</a></li>
-                    <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">Which NLP
-                        model?</a></li>
-                  </ul>
-                </div>
-                <div>&nbsp;</div>
+                </button>                                
               </div>
               <div class="card-footer">
                 <div class="input-group input-group-sm">
@@ -286,14 +272,9 @@
                     </button>
                     <div class="dropdown-menu p-1">
                       <div class="m-0">
-                        <label for="llmtempsetting" class="form-label">Temperature</label>
-                        <input class="form-range" type="range" min="0.1" max="2" step="0.1" value="1"
+                        <label for="llmtempsetting" class="form-label">TopK</label>
+                        <input class="form-range" type="range" min="1" max="4" step="1" value="1"
                           name="llmtempsetting" id="llmtempsetting" />
-                      </div>
-                      <div class="m-0">
-                        <label for="llmreppensetting" class="form-label">Repetition Penalty</label>
-                        <input class="form-range" type="range" min="1" max="2" step="0.1" value="1"
-                          name="llmreppensetting" id="llmreppensetting" />
                       </div>
                     </div>
                   </div>
@@ -315,24 +296,7 @@
                   <button id="achatonnxwaitalert" class="btn btn-secondary mb-2" type="button" disabled>
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     <span class="sr-only">Waiting for ONNX runtime ...</span>
-                  </button>
-                  <div class="card">
-                    <div class="card-header" id="arch_prompt_q">
-                      Sample prompts (Do not rely on the output):
-                    </div>
-                    <div id="arch_prompt_graphviz">
-                      <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><a href="#" class="card-link"
-                            onclick="startArchChat(this)">Visualize a random neural network model architecture</a></li>
-                        <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Generate
-                            a typical multi-cloud application with compute and storage</a></li>
-                        <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Create a
-                            deployment diagram for an on-prem web application</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div>&nbsp;</div>
-
+                  </button>                  
                 </div>
               </div>
               <div class="card-footer">
@@ -343,6 +307,19 @@
                     onclick="archWebGpuTokens()"><i class="bi bi-send"></i></button>
                   <button type="button" class="btn btn-outline-secondary btm-sm  border-0" onclick="clearArchChat()"><i
                       class="bi bi-eraser"></i></button>
+                  <div class="dropup">
+                    <button type="button" class="btn btn-outline-secondary btm-sm  border-0" data-bs-toggle="dropdown"
+                      data-bs-auto-close="outside">
+                      <i class="bi bi-sliders"></i>
+                    </button>
+                    <div class="dropdown-menu p-1">
+                      <div class="m-0">
+                        <label for="llmtempsetting" class="form-label">Resolution</label>
+                        <input class="form-range" type="range" min="32" max="128" step="8" value="64"
+                          name="gvizresolsetting" id="gvizresolsetting" />
+                      </div>
+                    </div>
+                  </div>                      
                 </div>
               </div>
             </div>
@@ -359,21 +336,6 @@
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     <span class="sr-only">Waiting for ONNX runtime ...</span>
                   </button>
-                  <div class="card">
-                    <div class="card-header">
-                      Sample prompts (Do not rely on the output):
-                    </div>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Create a
-                          new file and save using the terminal</a></li>
-                      <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Generate
-                          and save random HTML and show in browser</a></li>
-                      <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Visualize
-                          a random neural network model</a></li>
-                    </ul>
-                  </div>
-                  <div>&nbsp;</div>
-
                 </div>
               </div>
               <div class="card-footer">
@@ -539,6 +501,47 @@
           </div>
         </div>
       </div>
+      <div class="d-none" id="pchatonnxsamplecard">
+        <div class="card">
+          <div class="card-header">
+            <div>Sample prompts (Do not rely on the output):</div>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">Describe this website</a></li>
+            <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">List some skills from the profile</a></li>
+            <li class="list-group-item"><a href="#" class="card-link" onclick="startProfileChat(this)">Show AI experience</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="d-none" id="mchatonnxsamplecard">
+        <div class="card">
+          <div class="card-header">
+            Sample prompts (Do not rely on the output):
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">List files in the terminal</a></li>
+            <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Display some HTML in the browser</a></li>
+            <li class="list-group-item"><a href="#" class="card-link" onclick="startAgentChat(this)">Show a random neural network model</a></li>
+          </ul>
+        </div>        
+      </div>
+      <div class="d-none" id="archchatonnxsamplecard">
+        <div class="card">
+          <div class="card-header">
+            Sample prompts (Do not rely on the output):
+          </div>
+          <div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Visualize a random neural network</a></li>
+              <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Generate a multi-cloud diagram</a></li>
+              <li class="list-group-item"><a href="#" class="card-link" onclick="startArchChat(this)">Show an n-tier on-prem webapp</a></li>
+            </ul>             
+          </div>
+        </div>        
+      </div>
+      <div class="d-none">
+        <canvas id="workspaceCanvas" width="64" height="64"></canvas>
+      </div>      
       <script src="js/bootstrap.bundle.min.js" defer></script>
       <script src="js/ai.js" defer></script>
       <script src="js/index.js" defer></script>

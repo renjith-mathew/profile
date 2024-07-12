@@ -276,6 +276,11 @@
                         <input class="form-range" type="range" min="1" max="4" step="1" value="1"
                           name="llmtempsetting" id="llmtempsetting" />
                       </div>
+                      <div class="m-0">
+                        <label for="llmreppensetting" class="form-label">Repetition Penalty</label>
+                        <input class="form-range" type="range" min="1" max="10" step="1" value="2"
+                          name="llmreppensetting" id="llmreppensetting" />
+                      </div>                      
                     </div>
                   </div>
                 </div>                
@@ -540,7 +545,7 @@
         </div>        
       </div>
       <div class="d-none">
-        <canvas id="workspaceCanvas" width="64" height="64"></canvas>
+        <canvas id="workspaceCanvas" width="256" height="256"></canvas>
       </div>      
       <script src="js/bootstrap.bundle.min.js" defer></script>
       <script src="js/ai.js" defer></script>

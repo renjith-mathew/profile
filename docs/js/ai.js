@@ -246,10 +246,18 @@ function sampleOutputToken(results, previousTokens) {
 	//{logits: Je, argmax_token: Je, temp_argmax_token: Je}
 	let argmax_token = results['argmax_token'].data;
 	let topk_indices = results['topk_indices'].data;
-	let topk = parseInt(document.getElementById('llmtempsetting').value);
-	if (topk > 1) {
-		random_token = topk_indices[Math.floor(Math.random() * topk_indices.length)];
-		return random_token;
+	let topkSetting = parseInt(document.getElementById('llmtempsetting').value);
+	let repPenalty = parseInt(document.getElementById('llmreppensetting').value);
+	if (topkSetting > 1) {
+		argmax_token = topk_indices[Math.floor(Math.random() * topk_indices.length)];
+	} 
+	if(repPenalty>1 && previousTokens.length>0 && previousTokens[previousTokens.length-1]==argmax_token){
+		for(let i=0;i<topk_indices.length;i++){
+			if(topk_indices[i]!=argmax_token){
+				argmax_token = topk_indices[i];
+				break;
+			}
+		}
 	}
 	return argmax_token;
 }
@@ -275,6 +283,10 @@ async function webGpuTokens() {
 				await tickToken();
 				let bigIntArray = input_ids.map(input_id => BigInt(input_id));
 				let topkValue = parseInt(document.getElementById('llmtempsetting').value);
+				let repPenalty = parseInt(document.getElementById('llmreppensetting').value);
+				if(topkValue<repPenalty){
+					topkValue = repPenalty; //this is not real repetition penalty
+				}
 				const tensortopk = new ort.Tensor(new BigInt64Array(1), []);
 				tensortopk.data[0] = BigInt(topkValue);
 				const feeds = {
@@ -325,9 +337,10 @@ async function evaluateAgentModel(input_text,perfix_tag,suffix_tag){
 			let output_token_id = results['argmax_token'].data;
 			if(output_token_id>lastActionToken){
 				let logits = results['logits'].data;
-				//TODO pick a valid tag	
-			}				
-			input_ids.push(output_token_id);
+				//TODO pick a valid action tag	
+			} else {
+				input_ids.push(output_token_id);
+			}							
 			if (count > 0) {
 				if (output_token_id == 1 /* bos token id*/ || output_token_id == 2 /* eos token id*/) {
 					break;
@@ -349,8 +362,6 @@ function clearChat() {
 function generateImageUsingDiffusionModel() {
 	const canvas = document.getElementById('workspaceCanvas');
 	const ctx = canvas.getContext('2d');
-	canvas.width = 200;
-	canvas.height = 200;
 	for (let i = 0; i < 10; i++) {
 	  ctx.fillStyle = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 	  ctx.beginPath();

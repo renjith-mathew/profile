@@ -459,7 +459,7 @@ async function mathWebGpuTokens() {
 					}
 				}
 				document.getElementById("agentActionExecuteAll").remove();
-				document.getElementById("MathAssistantOutput").innerHTML = document.getElementById("MathAssistantOutput").innerHTML + "<div><i class='bi bi-robot'></i> Executed all the steps</div>";
+				document.getElementById("MathAssistantOutput").innerHTML = document.getElementById("MathAssistantOutput").innerHTML + "<div><i class='bi bi-robot'></i> Executed all the steps. Is there anything else I can help you with?</div>";
 			};
 		} else {
 			document.getElementById("MathAssistantOutput").innerHTML = "Unable to determine the agent steps. Please try a different prompt.";
@@ -521,12 +521,15 @@ function getRandomHexColor() {
 	  color += letters[Math.floor(Math.random() * 16)];
 	}
 	return color;
-  }
+}
+
+function getRandomNumber(minValue,maxValue){
+	return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+}
 
 function genMLP(){
-	const minValue = 1;
-	const maxValue = 2;
-	const numOutputs = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+	let resolution = parseInt(document.getElementById('gvizresolsetting').value);
+	const numOutputs = getRandomNumber(1,2);
 	const numInputs = numOutputs + 1;
 	const numHidden = numInputs + 1;
 	let inputNodes = [];
@@ -554,7 +557,7 @@ function genMLP(){
 		}
 	}
 	return `digraph G {
-			rankdir=LR
+			graph [rankdir="LR" resolution=${resolution}];
 			splines=line
 			node [fixedsize=true, label=""];
 
@@ -585,16 +588,162 @@ function genMLP(){
 	}`;
 }
 
+function genCNN(){
+	let resolution = parseInt(document.getElementById('gvizresolsetting').value);
+	const numOutputs = getRandomNumber(1,2);
+	return `digraph cnn {
+				graph [rankdir="LR" resolution=${resolution}];
+				input [label="Input Layer",color="${getRandomHexColor()}"];
+				conv1 [label="Convolutional Layer 1",color="${getRandomHexColor()}"];
+				input -> conv1;
+				relu1 [label="ReLU Layer 1",color="${getRandomHexColor()}"];
+				conv1 -> relu1;
+				pool1 [label="Pooling Layer 1",color="${getRandomHexColor()}"];
+				relu1 -> pool1;
+				conv2 [label="Convolutional Layer 2",color="${getRandomHexColor()}"];
+				pool1 -> conv2;
+				relu2 [label="ReLU Layer 2",color="${getRandomHexColor()}"];
+				conv2 -> relu2;
+				pool2 [label="Pooling Layer 2",color="${getRandomHexColor()}"];
+				relu2 -> pool2;
+				flatten [label="Flatten Layer",color="${getRandomHexColor()}"];
+				pool2 -> flatten;
+				fc1 [label="Fully Connected Layer 1",color="${getRandomHexColor()}"];
+				flatten -> fc1;
+				relu3 [label="ReLU Layer 3",color="${getRandomHexColor()}"];
+				fc1 -> relu3;
+				fc2 [label="Fully Connected Layer 2 (Output)",color="${getRandomHexColor()}"];
+				relu3 -> fc2;
+
+	}`;
+}
+
+function genRNN(){
+	let resolution = parseInt(document.getElementById('gvizresolsetting').value);
+	const numOutputs = getRandomNumber(1,2);
+	return `digraph rnn {
+				graph [rankdir="LR" resolution=${resolution}];
+				input [label="Input",color="${getRandomHexColor()}"];
+				# Hidden layer at timestep t-1 (previous hidden state)
+				h_tm1 [label="h(t-1)",color="${getRandomHexColor()}"];
+				# for example 2 time loops
+				{
+					rank=same;
+					input -> h_t [label="x(t)",color="${getRandomHexColor()}"];  // Current input to hidden layer (timestep t)
+					h_tm1 -> h_t [label="h(t-1)",color="${getRandomHexColor()}"]; // Previous hidden state to current hidden layer
+
+					h_t -> h_next [label="h(t)",color="${getRandomHexColor()}"];  // Current hidden state (timestep t) to next hidden layer
+				}
+				{
+					rank=same;
+					input -> h_next [label="x(t+1)",color="${getRandomHexColor()}"];  // Current input to hidden layer (timestep t+1)
+					h_t -> h_next [label="h(t)",color="${getRandomHexColor()}"]; // Previous hidden state (current for timestep t+1) to next hidden layer
+				}
+				output [label="Output (t+1)",color="${getRandomHexColor()}"];
+				h_next -> output;
+	}`;
+}
+
+function genTransformer(){
+	let resolution = parseInt(document.getElementById('gvizresolsetting').value);
+	const N = getRandomNumber(1,2);
+
+	let encoderLayers = "";
+	let decoderLayers = "";
+	let selfAttention = "";
+	let encoderDecoderAttention = "";
+	let multiHeadAttention = "";
+	let feedForward = "";
+	
+	for (let i = 1; i <= N; i++) {
+	  encoderLayers += `  encoder_${i} [label="Layer ${i}" color="${getRandomHexColor()}"];\n`;
+	  if (i > 1) {
+		encoderLayers += `  encoder_${i-1} -> encoder_${i};\n`;
+	  } else {
+		encoderLayers += `  embedding -> encoder_${i};\n`;
+	  }
+	
+	  decoderLayers += `  decoder_${i} [label="Layer ${i}" color="${getRandomHexColor()}"];\n`;
+	  if (i > 1) {
+		decoderLayers += `  decoder_${i-1} -> decoder_${i};\n`;
+	  } else {
+		decoderLayers += `  encoder_output -> decoder_${i};\n`;
+	  }
+	
+	  selfAttention += `  encoder_${i} -> encoder_${i} [label="Self-Attention" style="dashed" color="${getRandomHexColor()}"];\n`;
+	  encoderDecoderAttention += `  decoder_${i} -> encoder [label="Encoder-Decoder Attention" style="dashed" color="${getRandomHexColor()}"];\n`;
+	  multiHeadAttention += `  encoder_${i} -> encoder_${i} [label="Multi-Head Attention",color="${getRandomHexColor()}"];\n`;
+	  multiHeadAttention += `  decoder_${i} -> decoder_${i} [label="Multi-Head Attention",color="${getRandomHexColor()}"];\n`;
+	  feedForward += `  encoder_${i} -> encoder_${i} [label="Feed Forward",color="${getRandomHexColor()}"];\n`;
+	  feedForward += `  decoder_${i} -> decoder_${i} [label="Feed Forward",color="${getRandomHexColor()}"];\n`;
+	}
+	
+	const graphvizString = `
+		digraph transformer {
+			graph [rankdir="LR" resolution=${resolution}];
+			
+			# Input Embedding
+			subgraph cluster_input {
+				label="Input Embedding";
+				input [label="Input",color="${getRandomHexColor()}"];
+				pos_encoding [label="Positional Encoding",color="${getRandomHexColor()}"];
+				input -> pos_encoding;
+				pos_encoding -> embedding [label="Embedding",color="${getRandomHexColor()}"];
+			}
+			
+			# Encoder Stack
+			subgraph cluster_encoder {
+				label="Encoder Stack (N Layers)";
+				encoder [label="Encoder",color="${getRandomHexColor()}"];
+			
+				${encoderLayers}
+			}
+			
+			# Decoder Stack
+			subgraph cluster_decoder {
+				label="Decoder Stack (N Layers)";
+				decoder [label="Decoder",color="${getRandomHexColor()}"];
+			
+				${decoderLayers}
+			}
+			
+			# Output Layer
+			output [label="Output",color="${getRandomHexColor()}"];
+			decoder -> output;
+			
+			# Self-Attention within Encoder Layers
+			{ rank=same;
+				${selfAttention}
+			}
+			
+			# Encoder-Decoder Attention within Decoder Layers
+			{ rank=same;
+				${encoderDecoderAttention}
+			}
+			
+			# Multi-Head Attention within each Encoder/Decoder Layer
+			{ rank=same;
+				${multiHeadAttention}
+			}
+			
+			# Feed Forward within each Encoder/Decoder Layer
+			{ rank=same;
+				${feedForward}
+			}
+		}`;
+	return graphvizString;
+}
+
 function randNNGraph(nnType){
 	let nnGraph = 'digraph { input -> output }';
 	if(nnType==='mlp'){
 		nnGraph = genMLP();
 	} else if(nnType==='cnn'){
-		nnGraph = genMLP();
+		nnGraph = genCNN();
 	} else if(nnType==='rnn'){
-		nnGraph = genMLP();
+		nnGraph = genRNN();
 	} else if(nnType==='tfr'){
-		nnGraph = genMLP();
+		nnGraph = genTransformer();
 	}
 	return nnGraph;
 }

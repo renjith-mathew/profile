@@ -492,7 +492,7 @@ function getFileHtml(file_name) {
 	if (file_name.includes('.')) {
 		fileTypeIcon = 'bi-filetype-' + file_name.split('.').pop();
 	}
-	return `<div><input type="radio" class="btn-check" name="file_list" id="${file_name}" autocomplete="off" data-bs-item-ftype='file'>	
+	return `<div ondblclick="ctxOpenFile()"><input type="radio" class="btn-check" name="file_list" id="${file_name}" autocomplete="off" data-bs-item-ftype='file'>	
 	<label class="btn btn-outline-secondary border-0" for="${file_name}"><i class="bi bi-file-earmark ${fileTypeIcon}"></i> ${file_name}</label></div>`;
 }
 

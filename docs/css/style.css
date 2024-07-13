@@ -135,3 +135,10 @@ html[data-bs-theme=light] .wb-body {
 	-o-transform: scale(1.4);
 	margin: 0 1.4em 10px;
 }
+
+.editoriframe {
+	background-image:url('../images/loading_icon.gif');
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: center center;
+}

@@ -5,12 +5,12 @@
   <link href="css/style.css" rel="stylesheet" />
   <link href="css/bootstrap.min.css" rel="stylesheet" rel="preload" as="style" />
   <link href="css/bootstrap-icons.min.css" rel="stylesheet" rel="preload" as="style" />
-  <link href="css/xterm.min.css" rel="stylesheet" rel="preload" as="style" />
+  <link href="css/xterm.min.css" rel="stylesheet" rel="preload" as="style" />  
   <meta http-equiv="cache-control" content="no-cache" />
   <meta http-equiv="pragma" content="no-cache" />
 </head>
 
-<body id="landing" onload="setupSystem()">
+<body id="landing" onload="setupSystem()">  
   <nav class="navbar navbar-expand-sm shadow">
     <div class="container-fluid">
       <div class="collapse navbar-collapse">
@@ -188,6 +188,14 @@
             <p class="mt-2 desk_icon_text">File Browser</p>
           </div>
         </div>
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <button type="button" class="btn btn-secondary  btn-lg desk_icon_logo" onclick="openEditor()">
+              <i class="bi bi-file-code"></i>
+            </button>
+            <p class="mt-2 desk_icon_text">Code Editor</p>
+          </div>
+        </div>        
       </div>
     </div>
     <div id="file-context-menu" class="dropdown-menu" style="z-index: 9999;display: none;">
@@ -207,9 +215,9 @@
                   onclick="openTerminal()">
                   <i class="bi bi-terminal"></i>
                 </button></li>
-              <li><span>File Browser</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
-                  onclick="openFileBrowser()">
-                  <i class="bi bi-folder"></i>
+              <li><span>Code Editor</span><button type="button" class="btn btn-outline-secondary  btn-sm  border-0"
+                  onclick="openEditor()">
+                  <i class="bi bi-file-code"></i>
                 </button></li>
               <li><span>Architecture Chat</span><button type="button"
                   class="btn btn-outline-secondary  btn-sm  border-0" onclick="openArchitectureDesigner()">
@@ -238,12 +246,12 @@
     </div>
     <div id="theia_ide_backstore" class="d-none">
       <div id="theia_ide_content">
-        <iframe id="theia_content_iframe" name="theia_content_iframe"></iframe>
+        <iframe id="theia_content_iframe" name="theia_content_iframe" class="editoriframe"></iframe>
       </div>
     </div>
     <div id="profile_backstore" class="d-none">
       <div id="profile_content">
-        <iframe id="profile_content_iframe" name="profile_content_iframe"></iframe>
+        <iframe id="profile_content_iframe" name="profile_content_iframe" class="editoriframe"></iframe>
       </div>
     </div>
     <div id="chat_backstore" class="d-none">
@@ -381,7 +389,7 @@
               </td>
             </tr>
             <tr>
-              <td><iframe id="web_browser_content_iframe" name="web_browser_content_iframe"></iframe>
+              <td><iframe id="web_browser_content_iframe" name="web_browser_content_iframe" class="editoriframe"></iframe>
               </td>
             </tr>
           </table>
@@ -447,9 +455,7 @@
           </tr>
           <tr>
             <td>
-              <div id="text_editor_cotnent_editable" contenteditable="true" class="border">
-                Editor functionality is not built yet
-              </div>
+              <iframe id="monaco_editor_content_iframe" name="monaco_editor_content_iframe" class="editoriframe"></iframe>
             </td>
           </tr>
           </table>
@@ -553,7 +559,7 @@
       <script src="js/winbox.bundle.min.js" defer></script>
       <script src="js/xterm.min.js" defer></script>
       <script src="js/ort.min.js" defer></script>
-      <script src="js/viz-standalone.min.js" defer></script>
+      <script src="js/viz-standalone.min.js" defer></script>  
 </body>
 
 </html>

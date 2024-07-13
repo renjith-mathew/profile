@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>RM - Code Editor - Demo Only</title>
+</head>
+
+<body>
+    <div class="theia-preload"></div>
+     <!-- src of dummy rm.js script will be used by webpack to determine the url of uncompressed bundle -->
+    <script type="text/javascript" src="./rm.js" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      async function fetchAndAddScript(url) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+         const scriptTag = document.createElement("script");
+         const gzipData = await response.arrayBuffer();
+         const decompressAPI = new DecompressionStream('gzip');
+         const decompressedResponse = new Response(gzipData).body.pipeThrough(decompressAPI);
+         const decompressedBlob = await new Response(decompressedResponse).blob();
+         scriptTag.textContent = await decompressedBlob.text();
+         /*
+         //cannot use blob url since it gets prefixed with blob: and hence cannot load other urls
+         const decompressedBuffer = await new Response(decompressedResponse).arrayBuffer();
+         const decompressedBlob = new Blob([decompressedBuffer],{type:'application/javascript'});	   
+         scriptTag.src = URL.createObjectURL(decompressedBlob);	   
+         */
+         document.body.appendChild(scriptTag);
+        } catch (error) {
+          console.error('Error fetching script:', error);
+        }
+      }
+      fetchAndAddScript('bundle.js.gz');        
+    </script>
+</body>
+
+</html>

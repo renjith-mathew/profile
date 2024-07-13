@@ -183,6 +183,9 @@ function openEditor() {
 			mount: document.getElementById("theia_ide_content"),
 			x: "center",
 			y: "center",
+			oncreate: function (options) {
+				document.getElementById('theia_content_iframe').src = 'pages/ide/';
+			},
 			onclose: function (force) {
 				delete rmx_code_editor_obj;
 			}
@@ -202,6 +205,9 @@ function openTextEditor() {
 			mount: document.getElementById("text_editor_content"),
 			x: "center",
 			y: "center",
+			oncreate: function (options) {
+				document.getElementById('monaco_editor_content_iframe').src = 'pages/editor.html';
+			},
 			onclose: function (force) {
 				delete rmx_text_editor_obj;
 			}

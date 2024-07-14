@@ -36,7 +36,7 @@
               <li><a class="dropdown-item" href="#" onclick="openArchitectureDesigner()"><i class="bi bi-diagram-2"></i>
                   Build Chat
                 </a></li>
-              <li><a class="dropdown-item" href="#" onclick="openMathAssistant()"><i class="bi bi-infinity"></i> Agent
+              <li><a class="dropdown-item" href="#" onclick="openMathAssistant()"><i class="bi bi-robot"></i> Agent
                   Chat</a></li>
               <li>
                 <hr class="dropdown-divider">
@@ -47,8 +47,13 @@
                   Browser</a></li>
               <li><a class="dropdown-item" href="#" onclick="openFileBrowser()"><i class="bi bi-folder"></i> File
                   Browser</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>                  
               <li><a class="dropdown-item" href="#" onclick="openEditor()"><i class="bi bi-file-code"></i> Code
                   Editor</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openTextEditor()"><i class="bi bi-card-text"></i> Text
+                Editor</a></li>                  
             </ul>
           </li>
           <li class="nav-item">&nbsp;</li>
@@ -248,7 +253,9 @@
     </div>
     <div id="profile_backstore" class="d-none">
       <div id="profile_content">
-        <iframe id="profile_content_iframe" name="profile_content_iframe" class="editoriframe"></iframe>
+        <div id="profile_content">
+          <iframe id="profile_content_iframe" name="profile_content_iframe" class="list-group-item list-group-item-action editoriframe filliframe" frameborder="0"></iframe> 
+        </div>
       </div>
     </div>
     <div id="chat_backstore" class="d-none">
@@ -452,7 +459,9 @@
           </tr>
           <tr>
             <td>
-              <iframe id="monaco_editor_content_iframe" name="monaco_editor_content_iframe"></iframe>
+              <div class="embed-responsive">
+                <iframe id="monaco_editor_content_iframe" name="monaco_editor_content_iframe" class="filliframe" frameborder="0"></iframe>
+              </div>              
             </td>
           </tr>
           </table>

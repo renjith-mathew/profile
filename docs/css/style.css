@@ -142,3 +142,8 @@ html[data-bs-theme=light] .wb-body {
 	background-repeat: no-repeat;
 	background-position: center center;
 }
+
+.filliframe {
+	width: 100vw;
+	height: 100vh;
+}
